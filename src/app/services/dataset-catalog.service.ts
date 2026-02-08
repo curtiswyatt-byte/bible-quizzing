@@ -13,7 +13,7 @@ export class DatasetCatalogService {
   getCatalog(): Promise<DatasetInfo[]> {
     if (!this.catalogPromise) {
       this.catalogPromise = firstValueFrom(
-        this.http.get<DatasetInfo[]>('/datasets/catalog.json')
+        this.http.get<DatasetInfo[]>('datasets/catalog.json')
       ).then((catalog) => catalog ?? []);
     }
     return this.catalogPromise;
