@@ -1,0 +1,235 @@
+<div class="quiz-session-container" *ngIf="matchState">
+  <div class="quiz-session-header">
+    <div class="question-info">
+      <span class="question-number" [class.bonus-active]="matchState.bonusQuestion">
+        {{ matchState.bonusQuestion ? 'BONUS' : 'Question' }} {{ questionNum || 0 }}
+      </span>
+      <span class="question-id" *ngIf="questionID">ID: {{ questionID }}</span>
+      <span class="set-name">{{ setID }}</span>
+      <button
+        *ngIf="currentQuestion"
+        class="btn btn-flag"
+        [class.flagged]="isQuestionFlagged()"
+        (click)="toggleFlagQuestion()"
+        title="{{ isQuestionFlagged() ? 'Unflag this question' : 'Flag for review' }}">
+        {{ isQuestionFlagged() ? '🚩 Flagged' : '⚑ Flag' }}
+      </button>
+      <span *ngIf="getFlaggedQuestionsCount() > 0" class="flagged-count">
+        ({{ getFlaggedQuestionsCount() }} flagged)
+      </span>
+    </div>
+    <button class="btn btn-secondary" (click)="onEndMatch()">End Match</button>
+  </div>
+
+  <div class="match-layout">
+    <div class="match-left">
+      <ng-container *ngIf="currentQuestion; else preMatch">
+        <div class="question-section">
+          <div class="question-meta">
+            <div class="question-tags">
+              <span class="tag type">{{ questionTypeLabel }}</span>
+              <span class="tag id" *ngIf="questionID">ID {{ questionID }}</span>
+              <span class="tag reference" *ngIf="referenceLabel">{{ referenceLabel }}</span>
+            </div>
+          </div>
+
+          <div class="question-columns">
+            <div class="question-card">
+              <h3>Question</h3>
+              <div class="card-body scrollable">{{ questionIntro }} Question: {{ questionText }}</div>
+            </div>
+            <div class="question-card">
+              <h3>Answer</h3>
+              <div class="card-body scrollable">{{ answerText }}</div>
+            </div>
+          </div>
+
+          <div class="verse-card" *ngIf="verseText || verseWarning">
+            <div class="verse-header">
+              <h3>Verse</h3>
+              <span *ngIf="referenceLabel" class="tag reference">{{ referenceLabel }}</span>
+            </div>
+            <div class="card-body verse scrollable" *ngIf="verseText">{{ verseText }}</div>
+            <div class="verse-warning" *ngIf="!verseText && verseWarning">{{ verseWarning }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #preMatch>
+        <div class="question-section">
+          <div class="no-question-message">
+            <p *ngIf="questionNum === 0">Click "First Question" to begin the match.</p>
+            <p *ngIf="questionNum > 0">No active question. Use "Next Question" to continue.</p>
+            <p *ngIf="availableQuestions.length === 0" class="error-message">
+              ⚠️ No questions available in this set. Please select a different question set.
+            </p>
+            <p *ngIf="availableQuestions.length > 0" class="info-message">
+              ✓ {{ availableQuestions.length }} questions available in set "{{ setID }}"
+            </p>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="action-section">
+        <div class="timer-display" *ngIf="timerActive" [ngClass]="{'warning': timerWarn && !timerExpired, 'expired': timerExpired}">
+          <span class="timer-value">{{ getTimerDisplay() }}</span>
+          <span class="time-label" *ngIf="timerExpired">TIME</span>
+          <small *ngIf="settings && !timerExpired" class="timer-hint">
+            Speak ≤ {{ settings.speakWaitSeconds }}s • Answer ≤ {{ settings.answerTimeSeconds }}s
+          </small>
+        </div>
+        
+        <div class="action-buttons" *ngIf="currentQuestion" [class.no-player-selected]="selectedTeam1Chair === -1 && selectedTeam2Chair === -1 && !matchState?.bonusQuestion">
+          <button class="btn btn-success" (click)="onCorrect()">Correct</button>
+          <button class="btn btn-warning" (click)="onWrong()">Wrong</button>
+          <button class="btn btn-danger" (click)="onFoul()">Foul</button>
+        </div>
+
+        <div class="navigation-buttons">
+          <button
+            class="btn"
+            (click)="onNextQuestion()"
+            [class.attention]="matchState?.finishQuest"
+            [class.disabled-fade]="currentQuestion && !matchState?.finishQuest">
+            {{ questionNum === 0 ? 'First Question' : 'Next Question' }}
+          </button>
+          <button class="btn btn-secondary" (click)="onReplayQuestion()" *ngIf="questionNum > 0 && currentQuestion">
+            Replay Question
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="match-right">
+      <div class="teams-section">
+        <div class="team-panel team1" [style.background-color]="getTeam1Color()">
+          <div class="team-header">
+            <h2>{{ matchState.team1Team }}</h2>
+            <div class="team-score">
+              <span>Score: {{ matchState.team1Score }}</span>
+              <span>TOs: {{ matchState.team1TOs }}</span>
+              <span>Appeals: {{ matchState.team1Appeals }}</span>
+            </div>
+          </div>
+
+          <div class="chairs-section">
+            <div
+              *ngFor="let chair of matchState.team1Chairs; let i = index"
+              class="chair-item"
+              [class.selected]="selectedTeam1Chair === i"
+              [class.disabled]="!chair || chair.playerNumber === 0"
+              [class.quiz-out]="chair && isPlayerQuizOut(chair.playerNumber)"
+              [class.error-out]="chair && isPlayerErrorOut(chair.playerNumber)"
+              [class.bonus-only]="chair?.bonusOnly && !isPlayerErrorOut(chair?.playerNumber)"
+              [class.fouled-question]="chair && isPlayerFouled(chair.playerNumber)"
+              (click)="onTeam1ChairSelect(i)">
+              <div class="chair-name">
+                <span>Chair #{{ i + 1 }}: {{ chair ? chair.name : 'Empty' }}</span>
+                <div class="progress-indicators" *ngIf="chair && chair.playerNumber > 0">
+                  <div class="correct-progress">
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(1, chair.playerNumber) >= 1">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(1, chair.playerNumber) >= 2">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(1, chair.playerNumber) >= 3">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(1, chair.playerNumber) >= 4">✓</span>
+                  </div>
+                  <div class="error-progress">
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(1, chair.playerNumber) >= 1">✗</span>
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(1, chair.playerNumber) >= 2">✗</span>
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(1, chair.playerNumber) >= 3">✗</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="team-actions">
+            <button class="btn btn-small" (click)="onTimeout(1)">Timeout</button>
+            <button class="btn btn-small" (click)="onSubstitute(1)">Substitute</button>
+            <button class="btn btn-small" (click)="onAppeal(1)">Appeal</button>
+          </div>
+        </div>
+
+        <div class="team-panel team2" [style.background-color]="getTeam2Color()">
+          <div class="team-header">
+            <h2>{{ matchState.team2Team }}</h2>
+            <div class="team-score">
+              <span>Score: {{ matchState.team2Score }}</span>
+              <span>TOs: {{ matchState.team2TOs }}</span>
+              <span>Appeals: {{ matchState.team2Appeals }}</span>
+            </div>
+          </div>
+
+          <div class="chairs-section">
+            <div
+              *ngFor="let chair of matchState.team2Chairs; let i = index"
+              class="chair-item"
+              [class.selected]="selectedTeam2Chair === i"
+              [class.disabled]="!chair || chair.playerNumber === 0"
+              [class.quiz-out]="chair && isPlayerQuizOut(chair.playerNumber)"
+              [class.error-out]="chair && isPlayerErrorOut(chair.playerNumber)"
+              [class.bonus-only]="chair?.bonusOnly && !isPlayerErrorOut(chair?.playerNumber)"
+              [class.fouled-question]="chair && isPlayerFouled(chair.playerNumber)"
+              (click)="onTeam2ChairSelect(i)">
+              <div class="chair-name">
+                <span>Chair #{{ i + 1 }}: {{ chair ? chair.name : 'Empty' }}</span>
+                <div class="progress-indicators" *ngIf="chair && chair.playerNumber > 0">
+                  <div class="correct-progress">
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(2, chair.playerNumber) >= 1">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(2, chair.playerNumber) >= 2">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(2, chair.playerNumber) >= 3">✓</span>
+                    <span class="progress-icon" [class.filled]="getPlayerCorrect(2, chair.playerNumber) >= 4">✓</span>
+                  </div>
+                  <div class="error-progress">
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(2, chair.playerNumber) >= 1">✗</span>
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(2, chair.playerNumber) >= 2">✗</span>
+                    <span class="progress-icon" [class.filled]="getPlayerErrors(2, chair.playerNumber) >= 3">✗</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="team-actions">
+            <button class="btn btn-small" (click)="onTimeout(2)">Timeout</button>
+            <button class="btn btn-small" (click)="onSubstitute(2)">Substitute</button>
+            <button class="btn btn-small" (click)="onAppeal(2)">Appeal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quiz-session-container" *ngIf="!matchState">
+  <div class="no-match-message">
+    <h2>No active match</h2>
+    <p>Please select a question set and teams to start a match.</p>
+    <button class="btn" (click)="onStartMatch()">Start Match</button>
+  </div>
+</div>
+
+<app-substitution-dialog
+  *ngIf="showSubDialog"
+  [teamName]="subDialogTeamName"
+  [chairs]="subDialogChairs"
+  [availableSubs]="subDialogAvailableSubs"
+  [autoSubChairIndex]="subDialogAutoChairIndex"
+  [autoSubReason]="subDialogAutoReason"
+  (confirmed)="onSubDialogConfirm($event)"
+  (swapConfirmed)="onSwapDialogConfirm($event)"
+  (cancelled)="onSubDialogCancel()">
+</app-substitution-dialog>
+
+<app-timeout-dialog
+  *ngIf="showTimeoutDialog"
+  [teamName]="timeoutTeamName"
+  [durationSeconds]="timeoutDuration"
+  (completed)="onTimeoutComplete()">
+</app-timeout-dialog>
+
+<app-appeal-dialog
+  *ngIf="showAppealDialog"
+  [teamName]="appealTeamName"
+  [durationSeconds]="appealDuration"
+  (completed)="onAppealComplete()">
+</app-appeal-dialog>

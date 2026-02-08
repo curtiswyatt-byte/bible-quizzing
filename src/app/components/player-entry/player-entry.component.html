@@ -1,0 +1,95 @@
+<div class="player-entry-container">
+  <div class="player-entry-header">
+    <h1>Quiz Master Player Entry</h1>
+    <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+  </div>
+
+  <div class="player-entry-content">
+    <div class="form-section">
+      <div class="form-group">
+        <label class="form-label" for="playerNumber">Player Number:</label>
+        <input 
+          type="number" 
+          id="playerNumber"
+          class="form-control" 
+          [(ngModel)]="playerNumber"
+          (blur)="onPlayerNumberChange()"
+          placeholder="Enter or leave blank for auto">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="name">Player's Name:</label>
+        <input
+          type="text"
+          id="name"
+          class="form-control"
+          [(ngModel)]="name"
+          (focus)="onNameFocus()"
+          placeholder="Enter player's full name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="nickname">Nickname:</label>
+        <input 
+          type="text" 
+          id="nickname"
+          class="form-control" 
+          [(ngModel)]="nickname"
+          placeholder="Enter nickname">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="ageGroup">Age Group:</label>
+        <input 
+          type="text" 
+          id="ageGroup"
+          class="form-control" 
+          [(ngModel)]="ageGroup"
+          placeholder="Enter age group">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn" (click)="onAccept()">Accept</button>
+        <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+    </div>
+
+    <div class="list-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          class="form-control" 
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Search players...">
+      </div>
+
+      <div class="list-header">
+        <h3>Roster of Players</h3>
+      </div>
+
+      <div class="player-list">
+        <div 
+          *ngFor="let player of filteredPlayers" 
+          class="list-item"
+          (click)="onPlayerClick(player)">
+          <div class="player-item">
+            <span class="player-number">{{ player.playerNumber | number:'3.0' }}</span>
+            <span class="player-name">{{ player.name }}</span>
+            <span class="player-team">{{ player.team }}</span>
+            <button 
+              class="btn btn-danger btn-small"
+              (click)="onDeletePlayer(player.playerNumber); $event.stopPropagation()">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

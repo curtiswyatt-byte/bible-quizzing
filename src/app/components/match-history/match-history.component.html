@@ -1,0 +1,144 @@
+<div class="match-history-container">
+  <div class="header">
+    <h1>Match History</h1>
+    <button class="btn btn-secondary" (click)="goBack()">Back to Home</button>
+  </div>
+
+  <div class="content-layout">
+    <!-- Left Panel: Match List -->
+    <div class="match-list-panel">
+      <div class="panel-header">
+        <h2>Completed Matches</h2>
+        <div class="filter-section" *ngIf="teams.length > 0">
+          <label for="teamFilter">Filter by Team:</label>
+          <select id="teamFilter" [(ngModel)]="filterTeam">
+            <option value="">All Teams</option>
+            <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="match-list" *ngIf="getFilteredMatches().length > 0">
+        <div
+          *ngFor="let match of getFilteredMatches()"
+          class="match-card"
+          [class.selected]="selectedMatch?.quizID === match.quizID && selectedMatch?.matchID === match.matchID"
+          (click)="selectMatch(match)">
+          <div class="match-teams">
+            <span class="team" [class.winner]="match.score1 > match.score2">{{ match.team1 }}</span>
+            <span class="vs">vs</span>
+            <span class="team" [class.winner]="match.score2 > match.score1">{{ match.team2 }}</span>
+          </div>
+          <div class="match-score">
+            <span [class.winner]="match.score1 > match.score2">{{ match.score1 }}</span>
+            <span class="separator">-</span>
+            <span [class.winner]="match.score2 > match.score1">{{ match.score2 }}</span>
+          </div>
+          <div class="match-meta">
+            <span class="match-date">{{ formatTimestamp(match.quizID) }}</span>
+            <span class="match-winner" *ngIf="getWinner(match) !== 'Tie'">Winner: {{ getWinner(match) }}</span>
+            <span class="match-tie" *ngIf="getWinner(match) === 'Tie'">Tie Game</span>
+          </div>
+          <button class="btn btn-danger btn-small delete-btn" (click)="deleteMatch(match, $event)">Delete</button>
+        </div>
+      </div>
+
+      <div class="no-matches" *ngIf="getFilteredMatches().length === 0">
+        <p *ngIf="matches.length === 0">No matches have been recorded yet.</p>
+        <p *ngIf="matches.length > 0 && filterTeam">No matches found for "{{ filterTeam }}".</p>
+      </div>
+    </div>
+
+    <!-- Right Panel: Match Details -->
+    <div class="match-details-panel" *ngIf="selectedMatch">
+      <div class="panel-header">
+        <h2>{{ selectedMatch.team1 }} vs {{ selectedMatch.team2 }}</h2>
+        <div class="panel-actions">
+          <button class="btn btn-small" (click)="exportMatchJSON()">Export JSON</button>
+          <button class="btn btn-secondary btn-small" (click)="clearSelection()">Close</button>
+        </div>
+      </div>
+
+      <div class="final-score">
+        <div class="score-team" [class.winner]="selectedMatch.score1 > selectedMatch.score2">
+          <span class="team-name">{{ selectedMatch.team1 }}</span>
+          <span class="team-score">{{ selectedMatch.score1 }}</span>
+        </div>
+        <div class="score-divider">-</div>
+        <div class="score-team" [class.winner]="selectedMatch.score2 > selectedMatch.score1">
+          <span class="team-name">{{ selectedMatch.team2 }}</span>
+          <span class="team-score">{{ selectedMatch.score2 }}</span>
+        </div>
+      </div>
+
+      <!-- Player Statistics -->
+      <div class="stats-section" *ngIf="matchStats.length > 0">
+        <h3>Player Statistics</h3>
+        <div class="stats-table-wrapper">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Team</th>
+                <th>Correct</th>
+                <th>Errors</th>
+                <th>Fouls</th>
+                <th>Bonus Correct</th>
+                <th>Bonus Errors</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let stat of matchStats">
+                <td class="player-name">{{ stat.playerName }}</td>
+                <td class="player-team">{{ stat.team }}</td>
+                <td class="stat-correct">{{ stat.correct }}</td>
+                <td class="stat-errors">{{ stat.errors }}</td>
+                <td class="stat-fouls">{{ stat.fouls }}</td>
+                <td class="stat-bonus-correct">{{ stat.bonusCorrect }}</td>
+                <td class="stat-bonus-errors">{{ stat.bonusErrors }}</td>
+                <td class="stat-points">{{ stat.totalPoints }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Play-by-Play -->
+      <div class="playbyplay-section" *ngIf="matchDetails.length > 0">
+        <h3>Play-by-Play</h3>
+        <div class="playbyplay-list">
+          <div *ngFor="let detail of matchDetails" class="play-item" [ngClass]="getActionClass(detail.action)">
+            <div class="play-seq">Q{{ detail.questNum }}</div>
+            <div class="play-info">
+              <div class="play-question">
+                <span class="question-type" [class.bonus]="detail.questType === 'B'">
+                  {{ getQuestionTypeLabel(detail.questType) }}
+                </span>
+                <span class="question-id" *ngIf="detail.questID">ID: {{ detail.questID }}</span>
+              </div>
+              <div class="play-action">
+                <span class="player-name">{{ detail.playerName || 'Player #' + detail.actionPlayer }}</span>
+                <span class="action-badge" [ngClass]="getActionClass(detail.action)">{{ detail.action }}</span>
+              </div>
+              <div class="play-score">
+                Score: {{ detail.runningScore1 }} - {{ detail.runningScore2 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-details" *ngIf="matchDetails.length === 0 && matchStats.length === 0">
+        <p>No detailed data available for this match.</p>
+      </div>
+    </div>
+
+    <!-- Empty State for Right Panel -->
+    <div class="match-details-panel empty" *ngIf="!selectedMatch">
+      <div class="empty-message">
+        <p>Select a match to view details</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="data-import-container">
+  <div class="data-import-header">
+    <h1>Data Import / Export</h1>
+    <button class="btn btn-secondary" (click)="onCancel()">Return</button>
+  </div>
+
+  <div class="data-import-content">
+    <div class="import-section card">
+      <h2>Import Data</h2>
+      
+      <div class="form-group">
+        <label class="form-label">Import Type:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="importType" value="json" [(ngModel)]="importType">
+            JSON
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="importType" value="csv" [(ngModel)]="importType">
+            CSV
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" *ngIf="importType === 'csv'">
+        <label class="form-label">CSV Data Type:</label>
+        <select class="form-control" [(ngModel)]="csvDataType" name="csvDataType">
+          <option value="players">Players</option>
+          <option value="questions">Questions</option>
+          <option value="verses">Verses</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Select File:</label>
+        <input 
+          type="file" 
+          class="form-control" 
+          (change)="onFileSelected($event)"
+          [accept]="importType === 'json' ? '.json' : '.csv'">
+      </div>
+
+      <div class="form-group">
+        <button class="btn" (click)="onImport()" [disabled]="!selectedFile || isImporting">
+          {{ isImporting ? 'Importing...' : 'Import' }}
+        </button>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-container" *ngIf="isImporting && importProgress">
+        <div class="progress-info">
+          <span class="progress-step">{{ importProgress.stepName }}</span>
+          <span class="progress-percentage">{{ importProgress.percentage }}%</span>
+        </div>
+        <div class="progress-bar-wrapper">
+          <div class="progress-bar" [style.width.%]="importProgress.percentage"></div>
+        </div>
+        <div class="progress-details">
+          Step {{ importProgress.currentStep }} of {{ importProgress.totalSteps }} | 
+          {{ importProgress.currentItem }} of {{ importProgress.totalItems }} items
+        </div>
+      </div>
+
+      <div class="status-message" *ngIf="importStatus && !isImporting">
+        {{ importStatus }}
+      </div>
+    </div>
+
+    <div class="export-section card">
+      <h2>Export Data</h2>
+      <p>Export all current data to JSON format for backup or migration.</p>
+      <button class="btn btn-secondary" (click)="onExport()">Export to JSON</button>
+    </div>
+
+    <div class="sample-section card">
+      <h2>Sample Data</h2>
+      <p>Create sample/default data for testing purposes.</p>
+      <button class="btn btn-secondary" (click)="onCreateSample()">Create Sample Data</button>
+    </div>
+  </div>
+</div>
+

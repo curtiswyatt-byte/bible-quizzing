@@ -1,0 +1,72 @@
+<div class="statistics-container">
+  <div class="statistics-header">
+    <h1>Statistics {{ statType === 'team' ? 'by Teams' : 'by Player' }}</h1>
+    <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+  </div>
+
+  <div class="statistics-content">
+    <div class="filter-section">
+      <div class="form-group">
+        <label class="form-label" for="tournament">Select Tournament:</label>
+        <select 
+          id="tournament"
+          class="form-control" 
+          [(ngModel)]="selectedTournament"
+          (change)="onTournamentSelect()"
+          name="selectedTournament">
+          <option value="">Select Tournament</option>
+          <option *ngFor="let tournament of tournaments" [value]="tournament">{{ tournament }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="statType === 'team'">
+        <label class="form-label" for="team">Select Team:</label>
+        <select
+          id="team"
+          class="form-control"
+          [(ngModel)]="selectedTeam"
+          (change)="onTeamSelect()"
+          name="selectedTeam"
+          [disabled]="!selectedTournament || filteredTeams.length === 0">
+          <option value="">{{ selectedTournament ? (filteredTeams.length > 0 ? 'Select Team' : 'No teams with data') : 'Select a tournament first' }}</option>
+          <option *ngFor="let team of filteredTeams" [value]="team">{{ team }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="statType === 'player'">
+        <label class="form-label" for="player">Select Player:</label>
+        <select
+          id="player"
+          class="form-control"
+          [(ngModel)]="selectedPlayer"
+          (change)="onPlayerSelect()"
+          name="selectedPlayer"
+          [disabled]="!selectedTournament || filteredPlayers.length === 0">
+          <option [value]="null">{{ selectedTournament ? (filteredPlayers.length > 0 ? 'Select Player' : 'No players with data') : 'Select a tournament first' }}</option>
+          <option *ngFor="let player of filteredPlayers" [ngValue]="player">
+            {{ player.name }} ({{ player.playerNumber }})
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="display-section">
+      <div class="stats-header">
+        <span *ngIf="statType === 'team'">                                            Primary           Bonus          Out</span>
+      </div>
+      <div class="stats-display">
+        <pre class="stats-text">{{ displayText }}</pre>
+      </div>
+    </div>
+
+    <div class="action-section">
+      <button class="btn btn-secondary" (click)="onClear()">Clear Display</button>
+      <button class="btn" (click)="onPrint()">Print</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,119 @@
+<div class="explorer-container">
+  <div class="explorer-header">
+    <h1>Database Explorer</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="refreshData()" [disabled]="isLoading">
+        🔄 Refresh
+      </button>
+      <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+    </div>
+  </div>
+
+  <div class="explorer-content">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+      <p>Loading database information...</p>
+    </div>
+
+    <!-- Database Diagram View -->
+    <div class="diagram-view" *ngIf="viewMode === 'diagram' && !isLoading">
+      <div class="diagram-header">
+        <h2>Database Schema</h2>
+        <p class="help-text">Click on any table to view its data</p>
+      </div>
+
+      <div class="tables-grid">
+        <div *ngFor="let table of tables"
+             class="table-card"
+             (click)="selectTable(table)"
+             [class.empty]="table.recordCount === 0">
+          <div class="table-card-icon">{{ table.icon }}</div>
+          <div class="table-card-content">
+            <h3>{{ table.displayName }}</h3>
+            <p class="table-description">{{ table.description }}</p>
+            <div class="table-stats">
+              <span class="record-count">{{ table.recordCount }} records</span>
+              <span class="key-path">Key: {{ table.keyPath }}</span>
+            </div>
+            <div class="table-indices" *ngIf="table.indices.length > 0">
+              <strong>Indices:</strong> {{ table.indices.join(', ') }}
+            </div>
+            <div class="table-relations" *ngIf="table.relatedTables.length > 0">
+              <strong>Related:</strong> {{ table.relatedTables.join(', ') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="schema-info">
+        <h3>Database Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">{{ tables.length }}</div>
+            <div class="stat-label">Tables</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ totalRecords }}</div>
+            <div class="stat-label">Total Records</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ totalIndices }}</div>
+            <div class="stat-label">Total Indices</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Data View -->
+    <div class="table-view" *ngIf="viewMode === 'table' && !isLoading && tableData">
+      <div class="table-view-header">
+        <div class="table-view-title">
+          <button class="btn-back" (click)="backToDiagram()">← Back to Schema</button>
+          <h2>{{ selectedTable?.icon }} {{ selectedTable?.displayName }}</h2>
+        </div>
+        <div class="table-view-actions">
+          <div class="search-box">
+            <input
+              type="text"
+              [(ngModel)]="searchTerm"
+              placeholder="Search in table..."
+              class="search-input">
+          </div>
+          <button class="btn btn-primary" (click)="exportTable()">
+            📥 Export JSON
+          </button>
+        </div>
+      </div>
+
+      <div class="table-info-bar">
+        <span>{{ filteredRecords.length }} of {{ tableData.records.length }} records</span>
+        <span>Key: {{ selectedTable?.keyPath }}</span>
+      </div>
+
+      <div class="data-table-container" *ngIf="filteredRecords.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th *ngFor="let column of tableData.columns">{{ column }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let record of filteredRecords">
+              <td *ngFor="let column of tableData.columns">
+                <span class="cell-value">{{ formatValue(record[column]) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredRecords.length === 0 && searchTerm">
+        <p>No records match "{{ searchTerm }}"</p>
+      </div>
+
+      <div class="empty-state" *ngIf="tableData.records.length === 0 && !searchTerm">
+        <p>This table is empty</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<div class="dialog-overlay" (click)="cancel()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <h2>{{ teamName }} Substitution</h2>
+
+    <!-- Mode Toggle (only show if not in auto-sub mode and swap is possible) -->
+    <div class="mode-toggle" *ngIf="autoSubChairIndex === null && canSwap()">
+      <button
+        class="mode-btn"
+        [class.active]="mode === 'substitute'"
+        (click)="setMode('substitute')">
+        Substitute Player
+      </button>
+      <button
+        class="mode-btn"
+        [class.active]="mode === 'swap'"
+        (click)="setMode('swap')">
+        Swap Chairs
+      </button>
+    </div>
+
+    <!-- SUBSTITUTE MODE -->
+    <ng-container *ngIf="mode === 'substitute'">
+      <div class="dialog-section" *ngIf="autoSubChairIndex === null">
+        <h3>Select Chair to Replace:</h3>
+        <div class="chair-list">
+          <button
+            *ngFor="let chair of chairs"
+            class="chair-button"
+            [class.selected]="selectedChairIndex === chair.index"
+            [class.disabled]="chair.isEmpty"
+            [disabled]="chair.isEmpty"
+            (click)="selectChair(chair.index)">
+            <span class="chair-label">Chair {{ chair.index + 1 }}</span>
+            <span class="chair-name">{{ chair.displayName }}</span>
+            <span class="chair-status" *ngIf="chair.status">{{ chair.status }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="dialog-section" *ngIf="autoSubChairIndex !== null">
+        <div class="auto-sub-info">
+          <p><strong>{{ chairs[autoSubChairIndex]?.displayName }}</strong> has {{ autoSubReason }}.</p>
+          <p>Select a substitute:</p>
+        </div>
+      </div>
+
+      <div class="dialog-section">
+        <h3>Available Substitutes:</h3>
+        <div class="sub-list" *ngIf="availableSubs.length > 0">
+          <button
+            *ngFor="let sub of availableSubs"
+            class="sub-button"
+            [class.selected]="selectedPlayerNumber === sub.playerNumber"
+            [class.has-status]="sub.status"
+            (click)="selectPlayer(sub.playerNumber)">
+            <span class="sub-name">{{ sub.displayName }}</span>
+            <span class="sub-status" *ngIf="sub.status"
+              [class.quiz-out]="sub.status === 'Quizzed Out'"
+              [class.error-out]="sub.status === 'Errored Out'"
+              [class.foul-out]="sub.status === 'Fouled Out'">{{ sub.status }}</span>
+          </button>
+        </div>
+        <p class="no-subs-message" *ngIf="availableSubs.length === 0">
+          No available substitutes on the bench.
+        </p>
+      </div>
+    </ng-container>
+
+    <!-- SWAP MODE -->
+    <ng-container *ngIf="mode === 'swap'">
+      <div class="dialog-section">
+        <h3>Select Two Chairs to Swap:</h3>
+        <p class="swap-instructions">Click on two chairs to swap their players.</p>
+        <div class="chair-list swap-mode">
+          <button
+            *ngFor="let chair of chairs"
+            class="chair-button"
+            [class.swap-selected]="isSwapSelected(chair.index)"
+            [class.swap-first]="swapChair1 === chair.index"
+            [class.swap-second]="swapChair2 === chair.index"
+            [class.disabled]="chair.isEmpty"
+            [disabled]="chair.isEmpty"
+            (click)="selectChairForSwap(chair.index)">
+            <span class="swap-number" *ngIf="getSwapSelectionNumber(chair.index)">
+              {{ getSwapSelectionNumber(chair.index) }}
+            </span>
+            <span class="chair-label">Chair {{ chair.index + 1 }}</span>
+            <span class="chair-name">{{ chair.displayName }}</span>
+            <span class="chair-status" *ngIf="chair.status">{{ chair.status }}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="swap-preview" *ngIf="swapChair1 !== null && swapChair2 !== null">
+        <p>
+          <strong>{{ chairs[swapChair1]?.displayName }}</strong>
+          will move to Chair {{ swapChair2! + 1 }}
+        </p>
+        <p>
+          <strong>{{ chairs[swapChair2]?.displayName }}</strong>
+          will move to Chair {{ swapChair1! + 1 }}
+        </p>
+      </div>
+    </ng-container>
+
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <button
+        class="btn btn-primary"
+        [disabled]="!canConfirm()"
+        (click)="confirm()">
+        {{ mode === 'substitute' ? 'Confirm Substitution' : 'Confirm Swap' }}
+      </button>
+    </div>
+  </div>
+</div>

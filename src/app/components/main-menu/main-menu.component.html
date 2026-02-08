@@ -1,0 +1,133 @@
+<div class="main-menu-container">
+  <div class="main-menu-header">
+    <h1 class="main-title">BIBLE QUIZZING</h1>
+    <div class="book-selector-container">
+      <p class="book-name" *ngIf="bookName">{{ bookName }}</p>
+      <button class="btn-change-book" (click)="toggleDatasetSelector()" *ngIf="!showDatasetSelector">
+        Change Book/Version
+      </button>
+    </div>
+
+    <div class="dataset-selector" *ngIf="showDatasetSelector">
+      <h3>Select or Create Book & Version</h3>
+      <div class="selector-content">
+        <div class="selector-mode-tabs">
+          <button
+            class="mode-tab"
+            [class.active]="selectorMode === 'existing'"
+            (click)="selectorMode = 'existing'">
+            Select Existing
+          </button>
+          <button
+            class="mode-tab"
+            [class.active]="selectorMode === 'create'"
+            (click)="selectorMode = 'create'">
+            Create New
+          </button>
+        </div>
+
+        <div *ngIf="selectorMode === 'existing'">
+          <select [(ngModel)]="selectedDatasetId" class="dataset-dropdown">
+            <option value="">-- Select a dataset --</option>
+            <option *ngFor="let dataset of datasets" [value]="dataset.id">
+              {{ dataset.book }} - {{ dataset.version }}
+            </option>
+          </select>
+          <div class="selector-buttons">
+            <button class="btn btn-primary" (click)="changeDataset()" [disabled]="!selectedDatasetId">
+              Load Dataset
+            </button>
+            <button class="btn btn-secondary" (click)="cancelDatasetChange()">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="selectorMode === 'create'" class="create-form">
+          <div class="form-group">
+            <label for="newBook">Book of the Bible</label>
+            <input
+              id="newBook"
+              type="text"
+              [(ngModel)]="newBook"
+              placeholder="e.g., James, 1 Corinthians"
+              class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="newVersion">Bible Version</label>
+            <input
+              id="newVersion"
+              type="text"
+              [(ngModel)]="newVersion"
+              placeholder="e.g., NIV 1984, ESV, KJV"
+              class="form-input">
+          </div>
+          <div class="selector-buttons">
+            <button class="btn btn-primary" (click)="createNewBook()" [disabled]="!newBook || !newVersion">
+              Create
+            </button>
+            <button class="btn btn-secondary" (click)="cancelDatasetChange()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-menu-content">
+    <nav class="menu-nav">
+      <div class="menu-section">
+        <h2 class="menu-section-title">Create Quizzes</h2>
+        <ul class="menu-list">
+          <li><button class="menu-item" (click)="navigateTo('/question-entry')">Enter Questions</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/quiz-sets')">Manage Quiz Sets</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/question-version-analyzer')">Fix Question Book/Version</button></li>
+        </ul>
+      </div>
+
+      <div class="menu-section">
+        <h2 class="menu-section-title">Team Set Up</h2>
+        <ul class="menu-list">
+          <li><button class="menu-item" (click)="navigateTo('/team-setup')">Team Entry</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/player-entry')">Player Entry</button></li>
+        </ul>
+      </div>
+
+      <div class="menu-section">
+        <h2 class="menu-section-title">Quiz Match</h2>
+        <ul class="menu-list">
+          <li><button class="menu-item primary" (click)="navigateTo('/match-setup')">Play</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/tournaments')">Tournaments</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/match-settings')">Match Settings</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/statistics')">Statistics</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/match-history')">Match History</button></li>
+        </ul>
+      </div>
+
+      <div class="menu-section">
+        <h2 class="menu-section-title">Administration</h2>
+        <ul class="menu-list">
+          <li><button class="menu-item" (click)="navigateTo('/database-explorer')">Database Explorer</button></li>
+          <li><button class="menu-item" (click)="navigateTo('/print-questions')">Print Questions & Matches</button></li>
+          <li><button class="menu-item" (click)="bulkImportAllDatasets()" [disabled]="isBulkImporting">
+            {{ isBulkImporting ? 'Importing...' : 'Import All Datasets' }}
+          </button></li>
+        </ul>
+      </div>
+
+      <!-- Bulk Import Progress -->
+      <div class="bulk-import-progress" *ngIf="isBulkImporting">
+        <h3>Bulk Import in Progress</h3>
+        <p>{{ bulkImportProgress }}</p>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(bulkImportCurrent / bulkImportTotal) * 100"></div>
+        </div>
+        <p>{{ bulkImportCurrent }} / {{ bulkImportTotal }} datasets</p>
+      </div>
+    </nav>
+  </div>
+</div>
+
+
+

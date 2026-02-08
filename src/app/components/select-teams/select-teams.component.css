@@ -1,0 +1,133 @@
+.select-teams-container {
+  min-height: 100vh;
+  background-color: var(--xl-gray-light);
+  padding: 2rem;
+}
+
+.select-teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.select-teams-header h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--xl-blue-dark);
+}
+
+.select-teams-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.teams-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.team-section {
+  background-color: var(--xl-white);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.team-section.team1 {
+  border-left: 4px solid var(--team1-dark);
+}
+
+.team-section.team2 {
+  border-left: 4px solid var(--team2-dark);
+}
+
+.team-header {
+  margin-bottom: 1.5rem;
+}
+
+.team-header h2 {
+  font-size: 1.5rem;
+  color: var(--xl-blue-dark);
+  margin-bottom: 0.5rem;
+}
+
+.team-select {
+  width: 100%;
+}
+
+.players-section {
+  margin-bottom: 1.5rem;
+}
+
+.players-section h3 {
+  font-size: 1.1rem;
+  color: var(--xl-gray-dark);
+  margin-bottom: 0.5rem;
+}
+
+.player-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--xl-gray-light);
+  border-radius: 4px;
+}
+
+.player-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--xl-gray-light);
+  transition: background-color 0.2s;
+}
+
+.player-item:hover {
+  background-color: var(--xl-gray-light);
+}
+
+.player-item:last-child {
+  border-bottom: none;
+}
+
+.chairs-section h3 {
+  font-size: 1.1rem;
+  color: var(--xl-gray-dark);
+  margin-bottom: 0.5rem;
+}
+
+.chairs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chair-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: var(--xl-gray-light);
+  border-radius: 4px;
+}
+
+.chair-player {
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+@media (max-width: 968px) {
+  .teams-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+

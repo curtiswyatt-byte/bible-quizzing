@@ -1,0 +1,78 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Match Settings</h1>
+    <p>Tune gameplay controls so every quiz flows the way you expect.</p>
+    <div class="status-banner" *ngIf="savedBanner">{{ savedBanner }}</div>
+  </div>
+
+  <form class="settings-grid" (ngSubmit)="onSave()">
+    <fieldset>
+      <legend>Flow &amp; Timing</legend>
+      <label>
+        <span>Timeouts per Team</span>
+        <input type="number" [(ngModel)]="settings.timeoutsPerTeam" name="timeoutsPerTeam" min="0" required>
+      </label>
+      <label>
+        <span>Seconds to Answer</span>
+        <input type="number" [(ngModel)]="settings.answerTimeSeconds" name="answerTimeSeconds" min="1" required>
+      </label>
+      <label>
+        <span>Seconds to Start Speaking</span>
+        <input type="number" [(ngModel)]="settings.speakWaitSeconds" name="speakWaitSeconds" min="0" required>
+      </label>
+      <label>
+        <span>Timeout Duration (seconds)</span>
+        <input type="number" [(ngModel)]="settings.timeoutDurationSeconds" name="timeoutDurationSeconds" min="1" required>
+      </label>
+      <label>
+        <span>Appeals per Team</span>
+        <input type="number" [(ngModel)]="settings.appealsPerTeam" name="appealsPerTeam" min="0" required>
+      </label>
+      <label>
+        <span>Appeal Duration (seconds)</span>
+        <input type="number" [(ngModel)]="settings.appealDurationSeconds" name="appealDurationSeconds" min="1" required>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Scoring &amp; Limits</legend>
+      <label>
+        <span>Correct Answers to Quiz Out</span>
+        <input type="number" [(ngModel)]="settings.quizOutCorrect" name="quizOutCorrect" min="1" required>
+      </label>
+      <label>
+        <span>Quiz Out Bonus (points)</span>
+        <input type="number" [(ngModel)]="settings.quizOutBonusPoints" name="quizOutBonusPoints" required>
+      </label>
+      <label>
+        <span>Misses to Error Out</span>
+        <input type="number" [(ngModel)]="settings.errorOutMisses" name="errorOutMisses" min="1" required>
+      </label>
+      <label>
+        <span>Error Out Penalty (points)</span>
+        <input type="number" [(ngModel)]="settings.errorOutPenaltyPoints" name="errorOutPenaltyPoints" max="0" required>
+      </label>
+      <label>
+        <span>Fouls to Foul Out</span>
+        <input type="number" [(ngModel)]="settings.foulsToFoulOut" name="foulsToFoulOut" min="1" required>
+      </label>
+      <label>
+        <span>Foul Out Penalty (points)</span>
+        <input type="number" [(ngModel)]="settings.foulOutPenalty" name="foulOutPenalty" max="0" required>
+      </label>
+      <label>
+        <span>Bonus Question Points</span>
+        <input type="number" [(ngModel)]="settings.bonusQuestionPoints" name="bonusQuestionPoints" required>
+      </label>
+    </fieldset>
+  </form>
+
+  <div class="action-bar">
+    <button type="button" class="btn" (click)="onSave()">Save</button>
+    <button type="button" class="btn btn-secondary" (click)="onReset()">Reset Defaults</button>
+    <button type="button" class="btn btn-ghost" (click)="onCancel()">Back</button>
+  </div>
+</div>
+
+
+

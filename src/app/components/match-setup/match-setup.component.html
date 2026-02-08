@@ -1,0 +1,89 @@
+<div class="match-setup-container">
+  <header class="match-setup-header">
+    <h1>Match Setup</h1>
+    <p>Pick your book/version, question set, teams, and chairs in one place.</p>
+  </header>
+
+  <section class="card">
+    <h2>1. Book &amp; Version</h2>
+    <div class="field">
+      <label for="dataset">Select book/version</label>
+      <select id="dataset" [disabled]="loadingDataset" (change)="onDatasetChange($event)" [(ngModel)]="selectedDatasetId" name="dataset">
+        <option *ngFor="let dataset of datasets" [value]="dataset.id">
+          {{ dataset.book }} ({{ dataset.version }})
+        </option>
+      </select>
+    </div>
+    <p class="status" *ngIf="datasetMessage">{{ datasetMessage }}</p>
+  </section>
+
+  <section class="card">
+    <h2>2. Match Details</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="matchName">Match name</label>
+        <input id="matchName" type="text" [(ngModel)]="matchName" name="matchName" placeholder="Example: Quarter-Final 1" />
+      </div>
+      <div class="field">
+        <label for="questionSet">Question set</label>
+        <select id="questionSet" [(ngModel)]="selectedSet" name="questionSet">
+          <option *ngFor="let set of quizSets" [value]="set">{{ set }}</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Teams &amp; Chairs</h2>
+    <div class="teams-grid">
+      <div>
+        <div class="field">
+          <label for="team1">Team 1</label>
+          <select id="team1" [(ngModel)]="selectedTeam1" name="team1" (change)="loadTeamMembers()">
+            <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+          </select>
+        </div>
+        <div class="chairs">
+          <div class="chair" *ngFor="let chair of team1Chairs; let i = index">
+            <h3>Chair #{{ i + 1 }}</h3>
+            <p *ngIf="chair; else addChair1">{{ chair?.nickname || chair?.name }}</p>
+            <ng-template #addChair1>
+              <select (change)="onSelectPlayerFromList(1, $event, i)">
+                <option value="" disabled selected>Select player</option>
+                <option *ngFor="let player of team1Available" [value]="player.playerNumber">{{ player.nickname || player.name }}</option>
+              </select>
+            </ng-template>
+            <button class="link" *ngIf="chair" (click)="onRemoveChair(1, i)">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="field">
+          <label for="team2">Team 2</label>
+          <select id="team2" [(ngModel)]="selectedTeam2" name="team2" (change)="loadTeamMembers()">
+            <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+          </select>
+        </div>
+        <div class="chairs">
+          <div class="chair" *ngFor="let chair of team2Chairs; let i = index">
+            <h3>Chair #{{ i + 1 }}</h3>
+            <p *ngIf="chair; else addChair2">{{ chair?.nickname || chair?.name }}</p>
+            <ng-template #addChair2>
+              <select (change)="onSelectPlayerFromList(2, $event, i)">
+                <option value="" disabled selected>Select player</option>
+                <option *ngFor="let player of team2Available" [value]="player.playerNumber">{{ player.nickname || player.name }}</option>
+              </select>
+            </ng-template>
+            <button class="link" *ngIf="chair" (click)="onRemoveChair(2, i)">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="actions">
+    <button class="btn primary" (click)="onStartMatch()">Start Match</button>
+    <button class="btn" (click)="onCancel()">Cancel</button>
+  </footer>
+</div>

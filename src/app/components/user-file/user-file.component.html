@@ -1,0 +1,111 @@
+<div class="user-file-container">
+  <div class="user-file-header">
+    <h1>User File Update</h1>
+  </div>
+
+  <div class="user-file-content">
+    <form class="user-file-form">
+      <div class="form-group">
+        <label class="form-label" for="book">Book Name:</label>
+        <input 
+          type="text" 
+          id="book"
+          class="form-control" 
+          [(ngModel)]="book"
+          name="book"
+          list="bookOptionsList"
+          required>
+        <datalist id="bookOptionsList">
+          <option *ngFor="let option of bookOptions" [value]="option"></option>
+        </datalist>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="bookVersion">Scripture Version:</label>
+        <input
+          type="text"
+          id="bookVersion"
+          class="form-control"
+          [(ngModel)]="bookVersion"
+          name="bookVersion"
+          list="versionOptionsList"
+          placeholder="e.g., NIV 1984"
+          required>
+        <datalist id="versionOptionsList">
+          <option *ngFor="let option of versionOptions" [value]="option"></option>
+        </datalist>
+      </div>
+
+      <div class="form-group" *ngIf="datasetId">
+        <label class="form-label">Active Dataset:</label>
+        <p class="dataset-id">{{ datasetId }}</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="quizDBname">Database Location:</label>
+        <input 
+          type="text" 
+          id="quizDBname"
+          class="form-control" 
+          [(ngModel)]="quizDBname"
+          name="quizDBname"
+          placeholder="e.g., c:\BibleQuiz\James98.mdb"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="quizIDPre">Tournament Prefix:</label>
+        <input 
+          type="text" 
+          id="quizIDPre"
+          class="form-control" 
+          [(ngModel)]="quizIDPre"
+          name="quizIDPre"
+          placeholder="e.g., Quiz"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="quizIDNum">Tournament Number:</label>
+        <input 
+          type="text" 
+          id="quizIDNum"
+          class="form-control" 
+          [(ngModel)]="quizIDNum"
+          name="quizIDNum"
+          placeholder="e.g., 05/31/98 or 1"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Backup Drive:</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="backupDrive" 
+              value="A"
+              [(ngModel)]="backupDrive">
+            A
+          </label>
+          <label class="radio-label">
+            <input 
+              type="radio" 
+              name="backupDrive" 
+              value="B"
+              [(ngModel)]="backupDrive">
+            B
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" (click)="onAccept()">Accept</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,22 @@
+{
+  "Players": [],
+  "Teams": [],
+  "QuestionDetail": [],
+  "QuestionSelect": [],
+  "QuizSet": [],
+  "Verses": [],
+  "Types": [],
+  "Parms": [],
+  "MatchSummary": [],
+  "MatchDetail": [],
+  "MatchStats": [],
+  "userFile": {
+    "book": "James",
+    "quizDBname": "James Dataset",
+    "quizIDPre": "Quiz",
+    "quizIDNum": "1",
+    "backupDrive": "A",
+    "bookVersion": "Default",
+    "datasetId": "setupwiz-james98"
+  }
+}

@@ -1,0 +1,226 @@
+<div class="tournament-setup-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goBack()">
+      {{ currentStep === 1 ? 'Cancel' : 'Back' }}
+    </button>
+    <h1>New Tournament</h1>
+    <div class="step-indicator">Step {{ currentStep }} of {{ totalSteps }}</div>
+  </header>
+
+  <div class="content" *ngIf="!loading">
+    <!-- Step 1: Basic Info -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      <h2>Tournament Details</h2>
+
+      <div class="form-group">
+        <label for="tournamentName">Tournament Name</label>
+        <input
+          type="text"
+          id="tournamentName"
+          [(ngModel)]="tournamentName"
+          placeholder="Enter tournament name"
+          class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label for="dataset">Book / Version</label>
+        <select
+          id="dataset"
+          [(ngModel)]="selectedDatasetId"
+          (ngModelChange)="onDatasetChange()"
+          class="form-select">
+          <option *ngFor="let dataset of datasets" [value]="dataset.id">
+            {{ dataset.book }} ({{ dataset.version }})
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Tournament Type</label>
+        <div class="radio-group">
+          <label class="radio-option" [class.selected]="tournamentType === 'single-elimination'">
+            <input type="radio" name="type" value="single-elimination" [(ngModel)]="tournamentType">
+            <span class="radio-label">Single Elimination</span>
+            <span class="radio-desc">One loss and you're out</span>
+          </label>
+          <label class="radio-option" [class.selected]="tournamentType === 'double-elimination'">
+            <input type="radio" name="type" value="double-elimination" [(ngModel)]="tournamentType">
+            <span class="radio-label">Double Elimination</span>
+            <span class="radio-desc">Must lose twice to be eliminated</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Teams -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <h2>Select Teams</h2>
+
+      <div class="form-group">
+        <label>Seeding Method</label>
+        <div class="radio-group horizontal">
+          <label class="radio-option small" [class.selected]="seedingMethod === 'manual'">
+            <input type="radio" name="seeding" value="manual" [(ngModel)]="seedingMethod">
+            <span class="radio-label">Manual Order</span>
+          </label>
+          <label class="radio-option small" [class.selected]="seedingMethod === 'random'">
+            <input type="radio" name="seeding" value="random" [(ngModel)]="seedingMethod">
+            <span class="radio-label">Random Seeding</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="teams-selection">
+        <div class="available-teams">
+          <h3>Available Teams</h3>
+          <div class="team-list">
+            <button
+              *ngFor="let team of availableTeams"
+              class="team-button"
+              [class.selected]="isTeamSelected(team)"
+              (click)="toggleTeam(team)">
+              {{ team }}
+              <span class="check-mark" *ngIf="isTeamSelected(team)">&#10003;</span>
+            </button>
+          </div>
+          <p class="hint" *ngIf="availableTeams.length === 0">
+            No teams found. Add teams in Team Entry first.
+          </p>
+        </div>
+
+        <div class="selected-teams" *ngIf="seedingMethod === 'manual' && selectedTeams.length > 0">
+          <h3>Seed Order <span class="hint">(use arrows to reorder)</span></h3>
+          <div class="seed-list">
+            <div *ngFor="let team of selectedTeams; let i = index" class="seed-item">
+              <span class="seed-number">#{{ i + 1 }}</span>
+              <span class="seed-name">{{ team }}</span>
+              <div class="seed-actions">
+                <button class="seed-btn" (click)="moveTeamUp(i)" [disabled]="i === 0">&#9650;</button>
+                <button class="seed-btn" (click)="moveTeamDown(i)" [disabled]="i === selectedTeams.length - 1">&#9660;</button>
+                <button class="seed-btn remove" (click)="removeTeam(i)">&#10005;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-count-info" *ngIf="selectedTeams.length >= 2">
+        <p>{{ selectedTeams.length }} teams selected</p>
+        <p class="bye-info">
+          {{ getRound1MatchCount() }} match{{ getRound1MatchCount() === 1 ? '' : 'es' }} in Round 1<span *ngIf="hasRound1Bye()">, top seed gets a bye</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Step 3: Chapter Selection -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <h2>Select Chapters</h2>
+      <p class="step-desc">Choose which chapters to include. Quiz sets may cover multiple chapters, so selecting more chapters unlocks more sets.</p>
+
+      <div class="chapters-grid" *ngIf="!loadingDataset">
+        <button
+          *ngFor="let chapter of availableChapters"
+          class="chapter-button"
+          [class.selected]="isChapterSelected(chapter.chapter)"
+          (click)="toggleChapter(chapter.chapter)">
+          <span class="chapter-number">Chapter {{ chapter.chapter }}</span>
+          <span class="check-mark" *ngIf="isChapterSelected(chapter.chapter)">&#10003;</span>
+        </button>
+      </div>
+
+      <div class="loading-inline" *ngIf="loadingDataset">
+        Loading chapters...
+      </div>
+
+      <p class="hint" *ngIf="availableChapters.length === 0 && !loadingDataset">
+        No chapters found in the selected dataset.
+      </p>
+
+      <div class="chapter-summary" *ngIf="selectedChapters.length > 0">
+        <p><strong>{{ getTotalSetsAvailable() }}</strong> question sets available for chapters {{ formatSelectedChapters() }}</p>
+        <p class="hint" *ngIf="getTotalSetsAvailable() === 0">Select additional chapters to unlock sets that span multiple chapters.</p>
+      </div>
+    </div>
+
+    <!-- Step 4: Review -->
+    <div class="step-content" *ngIf="currentStep === 4">
+      <h2>Review Tournament</h2>
+
+      <div class="review-section">
+        <h3>Basic Info</h3>
+        <div class="review-item">
+          <span class="review-label">Name:</span>
+          <span class="review-value">{{ tournamentName }}</span>
+        </div>
+        <div class="review-item">
+          <span class="review-label">Type:</span>
+          <span class="review-value">{{ tournamentType === 'single-elimination' ? 'Single Elimination' : 'Double Elimination' }}</span>
+        </div>
+        <div class="review-item">
+          <span class="review-label">Seeding:</span>
+          <span class="review-value">{{ seedingMethod === 'manual' ? 'Manual Order' : 'Random' }}</span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Teams ({{ selectedTeams.length }})</h3>
+        <div class="review-teams">
+          <span *ngFor="let team of selectedTeams; let i = index" class="review-team">
+            <span class="seed-badge" *ngIf="seedingMethod === 'manual'">#{{ i + 1 }}</span>
+            {{ team }}
+          </span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Chapters</h3>
+        <div class="review-chapters">
+          <span *ngFor="let chapter of selectedChapters" class="review-chapter">
+            Chapter {{ chapter }}
+          </span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <h3>Round Assignments</h3>
+        <p class="review-note">Question sets are automatically assigned to ensure variety:</p>
+        <div class="review-item" *ngFor="let roundName of roundNames; let i = index">
+          <span class="review-label">{{ roundName }}:</span>
+          <span class="review-value">{{ getRoundQuestionSet(i + 1) }}</span>
+        </div>
+      </div>
+
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="navigation" *ngIf="!loading">
+    <button
+      class="nav-btn secondary"
+      *ngIf="currentStep > 1"
+      (click)="prevStep()">
+      Previous
+    </button>
+    <div class="spacer"></div>
+    <button
+      class="nav-btn primary"
+      *ngIf="currentStep < totalSteps"
+      [disabled]="!canProceed()"
+      (click)="nextStep()">
+      Next
+    </button>
+    <button
+      class="nav-btn create"
+      *ngIf="currentStep === totalSteps"
+      [disabled]="!canProceed()"
+      (click)="createTournament()">
+      Create Tournament
+    </button>
+  </div>
+</div>

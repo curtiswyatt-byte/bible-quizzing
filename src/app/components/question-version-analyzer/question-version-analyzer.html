@@ -1,0 +1,121 @@
+<div class="analyzer-container">
+  <div class="analyzer-header">
+    <h1>Question Book & Version Analyzer</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+    </div>
+  </div>
+
+  <div class="analyzer-content">
+    <!-- Dataset Loading Status -->
+    <div class="dataset-status" *ngIf="isLoadingDatasets">
+      <p>Loading datasets: {{ datasetsLoaded }} / {{ totalDatasets }}</p>
+      <p class="help-text">Please wait while datasets are loaded for analysis...</p>
+    </div>
+
+    <div class="analyzer-controls">
+      <div class="control-group">
+        <label>Filter by confidence:</label>
+        <select [(ngModel)]="filterConfidence" class="form-control-sm">
+          <option value="all">All Questions</option>
+          <option value="high">High Confidence Only</option>
+          <option value="medium">Medium Confidence Only</option>
+          <option value="low">Low Confidence Only</option>
+          <option value="duplicates">Duplicates Only</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <button class="btn btn-primary" (click)="analyzeQuestions()" [disabled]="isAnalyzing || isLoadingDatasets">
+          {{ isAnalyzing ? 'Analyzing...' : 'Refresh Analysis' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Bulk Selection Controls -->
+    <div class="bulk-actions" *ngIf="!isAnalyzing && !isLoadingDatasets && filteredAnalyses.length > 0">
+      <div class="bulk-selection">
+        <label>
+          <input type="checkbox" (change)="onSelectAllChange($event)">
+          Select All Visible
+        </label>
+        <button class="btn-link" (click)="selectByConfidence('high')">Select High Confidence</button>
+        <button class="btn-link" (click)="selectByConfidence('medium')">Select Medium Confidence</button>
+        <button class="btn-link" (click)="selectByConfidence('low')">Select Low Confidence</button>
+      </div>
+      <div class="bulk-update">
+        <button class="btn btn-success" (click)="updateSelected()" [disabled]="isUpdating || selectedCount === 0">
+          {{ isUpdating ? 'Updating...' : `Apply Selected (${selectedCount})` }}
+        </button>
+      </div>
+    </div>
+
+    <div class="analyzer-info" *ngIf="!isAnalyzing && !isLoadingDatasets">
+      <p><strong>{{ filteredAnalyses.length }}</strong> questions shown ({{ analyses.length }} total)</p>
+      <p class="help-text">
+        Questions are matched against {{ datasets.length }} loaded datasets. Select questions to update and click "Apply Selected".
+      </p>
+    </div>
+
+    <div class="analyzer-table-container" *ngIf="!isAnalyzing && !isLoadingDatasets && filteredAnalyses.length > 0">
+      <table class="analyzer-table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" (change)="onSelectAllChange($event)" title="Select/deselect all"></th>
+            <th>ID</th>
+            <th>Chapter:Verse</th>
+            <th>Current Book</th>
+            <th>Current Version</th>
+            <th>Suggested Book</th>
+            <th>Suggested Version</th>
+            <th>Confidence</th>
+            <th>Question Text & Reasoning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let analysis of filteredAnalyses"
+              [class.low-confidence]="analysis.confidence === 'low'"
+              [class.has-duplicate]="analysis.duplicateDatasets && analysis.duplicateDatasets.length > 0">
+            <td>
+              <input type="checkbox" [(ngModel)]="analysis.selected" [name]="'select-' + analysis.questionID">
+            </td>
+            <td>{{ analysis.questionID }}</td>
+            <td>{{ analysis.chapter }}:{{ analysis.verseRange }}</td>
+            <td>{{ analysis.currentBook || '-' }}</td>
+            <td>{{ analysis.currentVersion || '-' }}</td>
+            <td>{{ analysis.suggestedBook || '-' }}</td>
+            <td>{{ analysis.suggestedVersion || '-' }}</td>
+            <td>
+              <span class="confidence-badge"
+                    [class.confidence-low]="analysis.confidence === 'low'"
+                    [class.confidence-medium]="analysis.confidence === 'medium'"
+                    [class.confidence-high]="analysis.confidence === 'high'">
+                {{ analysis.confidence }}
+              </span>
+              <span class="duplicate-badge" *ngIf="analysis.duplicateDatasets && analysis.duplicateDatasets.length > 0"
+                    [title]="analysis.duplicateDatasets.join('\n')">
+                DUPLICATE ({{ analysis.duplicateDatasets.length }})
+              </span>
+            </td>
+            <td class="question-text">
+              {{ analysis.questionText }}
+              <small class="reasoning">{{ analysis.reasoning }}</small>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!isAnalyzing && !isLoadingDatasets && filteredAnalyses.length === 0 && analyses.length > 0">
+      <p>No questions match the current filter.</p>
+      <p class="help-text">Try changing the filter or clearing "Show only missing"</p>
+    </div>
+
+    <div class="empty-state" *ngIf="!isAnalyzing && !isLoadingDatasets && analyses.length === 0">
+      <p>No questions found in database.</p>
+    </div>
+
+    <div class="loading-state" *ngIf="isAnalyzing">
+      <p>Analyzing questions against {{ datasets.length }} datasets...</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="tournament-bracket-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goBack()">Back</button>
+    <div class="header-info" *ngIf="tournament">
+      <h1>{{ tournament.name }}</h1>
+      <span class="tournament-type">
+        {{ tournament.type === 'single-elimination' ? 'Single Elimination' : 'Double Elimination' }}
+      </span>
+    </div>
+    <div class="status-badge" *ngIf="tournament" [class]="tournament.status">
+      {{ tournament.status === 'in-progress' ? 'In Progress' : tournament.status === 'completed' ? 'Completed' : 'Setup' }}
+    </div>
+  </header>
+
+  <!-- Winner Banner -->
+  <div class="winner-banner" *ngIf="tournament?.status === 'completed' && getWinner()">
+    <span class="winner-label">Champion:</span>
+    <span class="winner-name">{{ getWinner() }}</span>
+  </div>
+
+  <div class="content" *ngIf="tournament && !loading">
+    <!-- Winners Bracket -->
+    <div class="bracket-section">
+      <h2 class="bracket-title">
+        {{ tournament.type === 'double-elimination' ? 'Winners Bracket' : 'Bracket' }}
+      </h2>
+      <div class="bracket-grid" [style.--round-count]="getWinnersRounds().length">
+        <div class="round-column" *ngFor="let round of getWinnersRounds()">
+          <div class="round-header">{{ round.name }}</div>
+          <div class="matches-container">
+            <ng-container *ngFor="let match of round.matches">
+              <!-- Bye match - show compact version -->
+              <div *ngIf="getMatchDisplay(match, round).isBye" class="match-card bye-match">
+                <div class="bye-advance">
+                  <span class="team-name">{{ match.result?.winnerTeamName || getSlotDisplay(match, 'team1') }}</span>
+                  <span class="bye-label">(bye)</span>
+                </div>
+              </div>
+              <!-- Real match -->
+              <div *ngIf="!getMatchDisplay(match, round).isBye"
+                class="match-card"
+                [class]="getMatchStatusClass(getMatchDisplay(match, round))"
+                (click)="openMatchDialog(getMatchDisplay(match, round))">
+                <div class="match-id" *ngIf="match.quizNumber > 0">Quiz {{ match.quizNumber }}</div>
+                <div class="team-row"
+                  [class.winner]="isWinner(match, 'team1')">
+                  <span class="team-name">{{ getSlotDisplay(match, 'team1') }}</span>
+                  <span class="team-score" *ngIf="match.result">{{ match.result.team1Score }}</span>
+                </div>
+                <div class="team-row"
+                  [class.winner]="isWinner(match, 'team2')">
+                  <span class="team-name">{{ getSlotDisplay(match, 'team2') }}</span>
+                  <span class="team-score" *ngIf="match.result">{{ match.result.team2Score }}</span>
+                </div>
+                <div class="match-action" *ngIf="getMatchDisplay(match, round).isPlayable">
+                  Click to play
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Losers Bracket (Double Elimination) -->
+    <div class="bracket-section losers" *ngIf="tournament.type === 'double-elimination' && getLosersRounds().length > 0">
+      <h2 class="bracket-title">Losers Bracket</h2>
+      <div class="bracket-grid" [style.--round-count]="getLosersRounds().length">
+        <div class="round-column" *ngFor="let round of getLosersRounds()">
+          <div class="round-header">{{ round.name }}</div>
+          <div class="matches-container">
+            <ng-container *ngFor="let match of round.matches">
+              <!-- Bye match - show compact version -->
+              <div *ngIf="getMatchDisplay(match, round).isBye" class="match-card bye-match">
+                <div class="bye-advance">
+                  <span class="team-name">{{ match.result?.winnerTeamName || getSlotDisplay(match, 'team1') }}</span>
+                  <span class="bye-label">(bye)</span>
+                </div>
+              </div>
+              <!-- Real match -->
+              <div *ngIf="!getMatchDisplay(match, round).isBye"
+                class="match-card"
+                [class]="getMatchStatusClass(getMatchDisplay(match, round))"
+                (click)="openMatchDialog(getMatchDisplay(match, round))">
+                <div class="match-id" *ngIf="match.quizNumber > 0">Quiz {{ match.quizNumber }}</div>
+                <div class="team-row"
+                  [class.winner]="isWinner(match, 'team1')">
+                  <span class="team-name">{{ getSlotDisplay(match, 'team1') }}</span>
+                  <span class="team-score" *ngIf="match.result">{{ match.result.team1Score }}</span>
+                </div>
+                <div class="team-row"
+                  [class.winner]="isWinner(match, 'team2')">
+                  <span class="team-name">{{ getSlotDisplay(match, 'team2') }}</span>
+                  <span class="team-score" *ngIf="match.result">{{ match.result.team2Score }}</span>
+                </div>
+                <div class="match-action" *ngIf="getMatchDisplay(match, round).isPlayable">
+                  Click to play
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finals -->
+    <div class="bracket-section finals" *ngIf="getFinalsRounds().length > 0">
+      <h2 class="bracket-title">Finals</h2>
+      <div class="bracket-grid finals-grid">
+        <div class="round-column" *ngFor="let round of getFinalsRounds()">
+          <div class="round-header">{{ round.name }}</div>
+          <div class="matches-container">
+            <div
+              *ngFor="let match of round.matches"
+              class="match-card finals-match"
+              [class]="getMatchStatusClass(getMatchDisplay(match, round))"
+              (click)="openMatchDialog(getMatchDisplay(match, round))">
+              <div class="match-id" *ngIf="match.quizNumber > 0">Quiz {{ match.quizNumber }}</div>
+              <div class="team-row"
+                [class.winner]="isWinner(match, 'team1')"
+                [class.bye]="match.team1Slot.type === 'bye'">
+                <span class="team-name">{{ getSlotDisplay(match, 'team1') }}</span>
+                <span class="team-score" *ngIf="match.result">{{ match.result.team1Score }}</span>
+              </div>
+              <div class="team-row"
+                [class.winner]="isWinner(match, 'team2')"
+                [class.bye]="match.team2Slot.type === 'bye'">
+                <span class="team-name">{{ getSlotDisplay(match, 'team2') }}</span>
+                <span class="team-score" *ngIf="match.result">{{ match.result.team2Score }}</span>
+              </div>
+              <div class="match-action" *ngIf="getMatchDisplay(match, round).isPlayable">
+                Click to play
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div class="error" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" (click)="goBack()">Back to Tournaments</button>
+  </div>
+</div>
+
+<!-- Match Action Dialog -->
+<div class="dialog-overlay" *ngIf="showMatchDialog && selectedMatch" (click)="closeMatchDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <h2>Quiz {{ selectedMatch.match.quizNumber }}</h2>
+    <div class="match-preview">
+      <div class="preview-team">{{ selectedMatch.team1Name }}</div>
+      <div class="preview-vs">VS</div>
+      <div class="preview-team">{{ selectedMatch.team2Name }}</div>
+    </div>
+    <div class="match-round">
+      <strong>Round:</strong> {{ selectedMatch.round.name }}
+    </div>
+    <div class="match-set" *ngIf="selectedMatch.round.questionSetId">
+      <strong>Question Set:</strong> {{ selectedMatch.round.questionSetId }}
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-primary" (click)="playMatch()">Play Match</button>
+      <button class="btn btn-secondary" (click)="openResultEntry()">Enter Results</button>
+      <button class="btn btn-cancel" (click)="closeMatchDialog()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Result Entry Dialog -->
+<div class="dialog-overlay" *ngIf="showResultDialog" (click)="closeResultDialog()">
+  <div class="dialog-content result-dialog" (click)="$event.stopPropagation()">
+    <h2>Enter Match Result</h2>
+    <div class="result-entry">
+      <div class="result-team">
+        <label>{{ selectedMatch?.team1Name }}</label>
+        <input type="number" [(ngModel)]="team1Score" min="0" class="score-input">
+      </div>
+      <div class="result-vs">-</div>
+      <div class="result-team">
+        <label>{{ selectedMatch?.team2Name }}</label>
+        <input type="number" [(ngModel)]="team2Score" min="0" class="score-input">
+      </div>
+    </div>
+    <p class="result-hint" *ngIf="team1Score === team2Score && (team1Score > 0 || team2Score > 0)">
+      Scores cannot be tied. One team must win.
+    </p>
+    <div class="dialog-actions">
+      <button class="btn btn-primary" (click)="submitResult()" [disabled]="team1Score === team2Score">
+        Save Result
+      </button>
+      <button class="btn btn-cancel" (click)="closeResultDialog()">Cancel</button>
+    </div>
+  </div>
+</div>

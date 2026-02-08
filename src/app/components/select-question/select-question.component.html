@@ -1,0 +1,53 @@
+<div class="select-question-container">
+  <div class="select-question-header">
+    <h1>Select Match Set Up</h1>
+  </div>
+
+  <div class="select-question-content">
+    <div class="form-section">
+      <div class="form-group">
+        <label class="form-label" for="matchID">Match Title:</label>
+        <input 
+          type="text" 
+          id="matchID"
+          class="form-control" 
+          [(ngModel)]="matchID"
+          name="matchID"
+          placeholder="Enter match ID"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="quizSet">Select Question Set:</label>
+        <select 
+          id="quizSet"
+          class="form-control" 
+          [(ngModel)]="selectedSet"
+          (change)="onSetSelect()"
+          name="selectedSet">
+          <option value="">Select Question Set</option>
+          <option *ngFor="let set of quizSets" [value]="set">{{ set }}</option>
+        </select>
+      </div>
+
+      <div class="question-list" *ngIf="questArr.length > 0">
+        <h3>Questions in Set:</h3>
+        <div class="quest-items">
+          <div *ngFor="let quest of questArr" class="quest-item">
+            Question {{ quest.questNum }} (Bonus: {{ quest.bonusNum }})
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" (click)="onAccept()">Accept</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

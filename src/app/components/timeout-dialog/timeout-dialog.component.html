@@ -1,0 +1,17 @@
+<div class="dialog-overlay">
+  <div class="dialog-content">
+    <h2>{{ teamName }} Timeout</h2>
+
+    <div class="timer-display" [class.warning]="timeRemaining <= 10 && timeRemaining > 0" [class.expired]="timeRemaining === 0">
+      <div class="timer-value">{{ getTimerDisplay() }}</div>
+      <div class="timer-label" *ngIf="timeRemaining > 0">Time Remaining</div>
+      <div class="timer-label expired-label" *ngIf="timeRemaining === 0">Time Expired</div>
+    </div>
+
+    <div class="dialog-actions">
+      <button class="btn btn-primary" (click)="endTimeout()">
+        {{ timeRemaining === 0 ? 'Close' : 'End Timeout Early' }}
+      </button>
+    </div>
+  </div>
+</div>

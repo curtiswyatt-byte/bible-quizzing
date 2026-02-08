@@ -1,0 +1,165 @@
+<div class="print-container">
+  <header class="print-header">
+    <h1>Print Questions & Matches</h1>
+    <button class="btn btn-secondary" (click)="goBack()">← Back to Menu</button>
+  </header>
+
+  <div class="print-layout">
+    <!-- Left Panel: Filters & Selection -->
+    <div class="filter-panel">
+      <h2>Question Filters</h2>
+
+      <div class="filter-group">
+        <label>Quiz Set</label>
+        <select [(ngModel)]="selectedQuizSet" (change)="loadQuizSetQuestions()">
+          <option value="">-- All Questions --</option>
+          <option *ngFor="let set of quizSets" [value]="set.setID">
+            {{ set.setID }} ({{ set.count }} questions)
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Book</label>
+        <select [(ngModel)]="selectedBook" (change)="applyFilters()">
+          <option value="">-- All Books --</option>
+          <option *ngFor="let book of books" [value]="book">{{ book }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Version</label>
+        <select [(ngModel)]="selectedVersion" (change)="applyFilters()">
+          <option value="">-- All Versions --</option>
+          <option *ngFor="let ver of versions" [value]="ver">{{ ver }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Question Type</label>
+        <select [(ngModel)]="selectedType" (change)="applyFilters()">
+          <option value="">-- All Types --</option>
+          <option *ngFor="let type of questionTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Search</label>
+        <input type="text" [(ngModel)]="searchText" (input)="applyFilters()" placeholder="Search questions...">
+      </div>
+
+      <div class="filter-group checkbox-group" *ngIf="flaggedQuestions.size > 0">
+        <label>
+          <input type="checkbox" [(ngModel)]="showOnlyFlagged" (change)="applyFilters()">
+          Show only flagged questions ({{ flaggedQuestions.size }})
+        </label>
+      </div>
+
+      <div class="selection-actions">
+        <button class="btn btn-small" (click)="selectAll()">Select All</button>
+        <button class="btn btn-small btn-secondary" (click)="selectNone()">Select None</button>
+        <span class="selection-count">{{ selectedQuestions.size }} selected</span>
+      </div>
+
+      <h2>Print Options</h2>
+
+      <div class="filter-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="printOptions.includeAnswers">
+          Include answers
+        </label>
+      </div>
+
+      <div class="filter-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="printOptions.includeVerseRefs">
+          Include verse references
+        </label>
+      </div>
+
+      <div class="filter-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="printOptions.includeQuestionIDs">
+          Include question IDs
+        </label>
+      </div>
+
+      <div class="filter-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="printOptions.includeQuestionTypes">
+          Include question types
+        </label>
+      </div>
+
+      <div class="filter-group">
+        <label>Font Size</label>
+        <select [(ngModel)]="printOptions.fontSize">
+          <option value="small">Small (10pt)</option>
+          <option value="medium">Medium (12pt)</option>
+          <option value="large">Large (14pt)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Questions per page</label>
+        <input type="number" [(ngModel)]="printOptions.questionsPerPage" min="1" max="20">
+      </div>
+
+      <button class="btn btn-primary print-btn" (click)="printQuestions()" [disabled]="selectedQuestions.size === 0">
+        🖨️ Print {{ selectedQuestions.size }} Questions
+      </button>
+
+      <hr>
+
+      <h2>Print Match Report</h2>
+
+      <div class="filter-group">
+        <label>Select Match</label>
+        <select [(ngModel)]="selectedMatch">
+          <option value="">-- Select a Match --</option>
+          <option *ngFor="let match of matches" [value]="match.quizID + '|' + match.matchID">
+            {{ match.team1 }} vs {{ match.team2 }} ({{ match.score1 }}-{{ match.score2 }})
+          </option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary print-btn" (click)="printMatch()" [disabled]="!selectedMatch">
+        🖨️ Print Match Report
+      </button>
+    </div>
+
+    <!-- Right Panel: Question Preview -->
+    <div class="preview-panel">
+      <h2>Questions ({{ filteredQuestions.length }})</h2>
+
+      <div class="question-list">
+        <div
+          *ngFor="let q of filteredQuestions; let i = index"
+          class="question-item"
+          [class.selected]="isSelected(q.questionID)"
+          [class.flagged]="isFlagged(q.questionID)"
+          (click)="toggleQuestion(q.questionID)">
+          <div class="question-checkbox">
+            <input type="checkbox" [checked]="isSelected(q.questionID)" (click)="$event.stopPropagation()">
+          </div>
+          <div class="question-content">
+            <div class="question-meta-row">
+              <span class="q-id">ID: {{ q.questionID }}</span>
+              <span class="q-type" *ngIf="q.qDescType">{{ q.qDescType }}</span>
+              <span class="q-ref" *ngIf="q.qChapter">{{ q.book }} {{ q.qChapter }}:{{ q.qBegVerse }}</span>
+              <span class="q-flag" *ngIf="isFlagged(q.questionID)">🚩</span>
+            </div>
+            <div class="question-text">{{ q.qdescription }}</div>
+            <div class="answer-text" *ngIf="printOptions.includeAnswers">
+              <strong>A:</strong> {{ q.qAnswer }}
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredQuestions.length === 0" class="no-questions">
+          No questions match your filters.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

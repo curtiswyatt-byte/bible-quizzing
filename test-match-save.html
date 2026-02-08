@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test IndexedDB Match Data</title>
+</head>
+<body>
+    <h1>IndexedDB Match Data Test</h1>
+    <button onclick="checkMatchData()">Check Match Data</button>
+    <pre id="output"></pre>
+
+    <script>
+        function checkMatchData() {
+            const output = document.getElementById('output');
+            output.textContent = 'Checking IndexedDB...\n';
+
+            const request = indexedDB.open('QuizDatabase', 1);
+
+            request.onerror = () => {
+                output.textContent += 'Error opening database\n';
+            };
+
+            request.onsuccess = (event) => {
+                const db = event.target.result;
+                output.textContent += 'Database opened successfully\n';
+                output.textContent += 'Available stores: ' + Array.from(db.objectStoreNames).join(', ') + '\n\n';
+
+                // Check matchSummary
+                if (db.objectStoreNames.contains('matchSummary')) {
+                    const tx1 = db.transaction(['matchSummary'], 'readonly');
+                    const store1 = tx1.objectStore('matchSummary');
+                    const req1 = store1.getAll();
+                    
+                    req1.onsuccess = () => {
+                        output.textContent += '=== MATCH SUMMARIES ===\n';
+                        output.textContent += 'Count: ' + req1.result.length + '\n';
+                        req1.result.forEach((item, idx) => {
+                            output.textContent += `  ${idx+1}. ${item.team1} vs ${item.team2}: ${item.score1}-${item.score2}\n`;
+                            output.textContent += `     Quiz: ${item.quizID}, Match: ${item.matchID}\n`;
+                        });
+                        output.textContent += '\n';
+                    };
+                }
+
+                // Check matchDetail
+                if (db.objectStoreNames.contains('matchDetail')) {
+                    const tx2 = db.transaction(['matchDetail'], 'readonly');
+                    const store2 = tx2.objectStore('matchDetail');
+                    const req2 = store2.getAll();
+                    
+                    req2.onsuccess = () => {
+                        output.textContent += '=== MATCH DETAILS ===\n';
+                        output.textContent += 'Count: ' + req2.result.length + '\n';
+                        if (req2.result.length > 0) {
+                            output.textContent += 'Sample (first 5):\n';
+                            req2.result.slice(0, 5).forEach((item, idx) => {
+                                output.textContent += `  ${idx+1}. Q${item.questNum} Player#${item.actionPlayer}: ${item.action} (${item.points}pts)\n`;
+                            });
+                        }
+                        output.textContent += '\n';
+                    };
+                }
+
+                // Check matchStats
+                if (db.objectStoreNames.contains('matchStats')) {
+                    const tx3 = db.transaction(['matchStats'], 'readonly');
+                    const store3 = tx3.objectStore('matchStats');
+                    const req3 = store3.getAll();
+                    
+                    req3.onsuccess = () => {
+                        output.textContent += '=== MATCH STATS ===\n';
+                        output.textContent += 'Count: ' + req3.result.length + '\n';
+                        req3.result.forEach((item, idx) => {
+                            output.textContent += `  ${idx+1}. Player#${item.playerNumber}: ${item.correct}C/${item.errors}E/${item.fouls}F\n`;
+                        });
+                    };
+                }
+            };
+        }
+    </script>
+</body>
+</html>

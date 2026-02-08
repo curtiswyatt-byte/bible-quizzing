@@ -1,0 +1,41 @@
+<div class="data-library-container">
+  <header class="data-library-header">
+    <h1>Data Library</h1>
+    <p>Choose a book/version dataset to activate instantly.</p>
+  </header>
+
+  <section *ngIf="error" class="alert alert-error">{{ error }}</section>
+  <section *ngIf="message" class="alert alert-success">{{ message }}</section>
+
+  <div class="dataset-grid" *ngIf="datasets.length > 0">
+    <article
+      *ngFor="let dataset of datasets"
+      class="dataset-card"
+      [class.active]="dataset.id === activeDatasetId"
+    >
+      <div class="dataset-info">
+        <h2>{{ dataset.book }} <span class="dataset-version">({{ dataset.version }})</span></h2>
+        <p class="dataset-description">{{ dataset.description || 'Dataset ready to load.' }}</p>
+      </div>
+
+      <div class="dataset-meta">
+        <div><strong>Dataset ID:</strong> {{ dataset.id }}</div>
+        <div><strong>Source:</strong> {{ dataset.path }}</div>
+      </div>
+
+      <button
+        class="btn"
+        [disabled]="loading || dataset.id === activeDatasetId"
+        (click)="onActivate(dataset)"
+      >
+        {{ dataset.id === activeDatasetId ? 'Active' : 'Activate' }}
+      </button>
+    </article>
+  </div>
+
+  <footer class="data-library-footer">
+    <button class="btn btn-secondary" (click)="goHome()">Return to Main Menu</button>
+  </footer>
+</div>
+
+

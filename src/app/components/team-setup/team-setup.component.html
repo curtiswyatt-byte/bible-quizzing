@@ -1,0 +1,85 @@
+<div class="team-setup-container">
+  <div class="team-setup-header">
+    <h1>Quiz Master Team Set Up</h1>
+    <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+  </div>
+
+  <div class="team-setup-content">
+    <div class="mode-selection">
+      <label class="radio-label">
+        <input type="radio" name="mode" value="create" [(ngModel)]="mode" (change)="onModeChange('create')">
+        Add a New Team
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="mode" value="edit" [(ngModel)]="mode" (change)="onModeChange('edit')">
+        Change an Existing Team
+      </label>
+      <label class="radio-label">
+        <input type="radio" name="mode" value="rename" [(ngModel)]="mode" (change)="onModeChange('rename')">
+        Rename an Existing Team
+      </label>
+    </div>
+
+    <div class="form-section">
+      <div class="form-group" *ngIf="mode === 'create'">
+        <label class="form-label" for="teamName">Team:</label>
+        <input 
+          type="text" 
+          id="teamName"
+          class="form-control" 
+          [(ngModel)]="teamName"
+          (blur)="onTeamNameEnter()"
+          name="teamName"
+          placeholder="Enter team name">
+      </div>
+
+      <div class="form-group" *ngIf="mode === 'edit' || mode === 'rename'">
+        <label class="form-label" for="selectedTeam">Team:</label>
+        <select 
+          id="selectedTeam"
+          class="form-control" 
+          [(ngModel)]="selectedTeam"
+          (change)="onTeamSelect()"
+          name="selectedTeam">
+          <option value="">Select Team</option>
+          <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="(mode === 'edit' || mode === 'create') && (selectedTeam || teamName)">
+        <label class="form-label" for="playerSelect">Players:</label>
+        <select 
+          id="playerSelect"
+          class="form-control" 
+          [(ngModel)]="selectedPlayer"
+          (change)="onPlayerSelect()"
+          name="playerSelect">
+          <option [value]="null">Select Player</option>
+          <option *ngFor="let player of availablePlayers" [ngValue]="player">
+            {{ player.name }} {{ player.nickname ? '(' + player.nickname + ')' : '' }}
+          </option>
+        </select>
+      </div>
+
+      <div class="team-members-list" *ngIf="teamMembers.length > 0">
+        <h3>Team Members:</h3>
+        <div class="member-list">
+          <div *ngFor="let member of teamMembers" class="member-item">
+            <span>{{ member.playerNumber }} - {{ member.name }}</span>
+            <button class="btn btn-danger btn-small" (click)="onRemovePlayer(member)">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn" (click)="onAccept()" *ngIf="teamMembers.length > 0">Accept</button>
+        <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+

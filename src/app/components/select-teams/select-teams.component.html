@@ -1,0 +1,94 @@
+<div class="select-teams-container">
+  <div class="select-teams-header">
+    <h1>Select Teams for Match</h1>
+    <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+  </div>
+
+  <div class="select-teams-content">
+    <div class="teams-section">
+      <div class="team-section team1">
+        <div class="team-header">
+          <h2>Team #1</h2>
+          <select 
+            class="form-control team-select" 
+            [(ngModel)]="selectedTeam1"
+            (change)="onTeam1Select()"
+            name="selectedTeam1">
+            <option value="">Select Team</option>
+            <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+          </select>
+        </div>
+
+        <div class="players-section">
+          <h3>Select Players</h3>
+          <div class="player-list">
+            <div 
+              *ngFor="let player of team1Players" 
+              class="player-item"
+              (click)="onTeam1PlayerClick(player, getNextEmptyChair(1))">
+              {{ player.playerNumber }} - {{ player.name }}
+            </div>
+          </div>
+        </div>
+
+        <div class="chairs-section">
+          <h3>Chairs</h3>
+          <div class="chairs-list">
+            <div *ngFor="let chair of team1Chairs; let i = index" class="chair-item">
+              <span>Chair #{{ i + 1 }}:</span>
+              <span class="chair-player">{{ chair ? (chair.nickname || chair.name) : 'Empty' }}</span>
+              <button *ngIf="chair" class="btn btn-danger btn-small" (click)="onRemoveTeam1Chair(i)">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-section team2">
+        <div class="team-header">
+          <h2>Team #2</h2>
+          <select 
+            class="form-control team-select" 
+            [(ngModel)]="selectedTeam2"
+            (change)="onTeam2Select()"
+            name="selectedTeam2">
+            <option value="">Select Team</option>
+            <option *ngFor="let team of teams" [value]="team">{{ team }}</option>
+          </select>
+        </div>
+
+        <div class="players-section">
+          <h3>Select Players</h3>
+          <div class="player-list">
+            <div 
+              *ngFor="let player of team2Players" 
+              class="player-item"
+              (click)="onTeam2PlayerClick(player, getNextEmptyChair(2))">
+              {{ player.playerNumber }} - {{ player.name }}
+            </div>
+          </div>
+        </div>
+
+        <div class="chairs-section">
+          <h3>Chairs</h3>
+          <div class="chairs-list">
+            <div *ngFor="let chair of team2Chairs; let i = index" class="chair-item">
+              <span>Chair #{{ i + 1 }}:</span>
+              <span class="chair-player">{{ chair ? (chair.nickname || chair.name) : 'Empty' }}</span>
+              <button *ngIf="chair" class="btn btn-danger btn-small" (click)="onRemoveTeam2Chair(i)">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn" (click)="onAccept()">Accept</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+

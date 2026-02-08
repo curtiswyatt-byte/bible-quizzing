@@ -1,0 +1,98 @@
+<div class="tournament-list-container">
+  <header class="page-header">
+    <button class="back-button" (click)="goBack()">Back</button>
+    <h1>Tournaments</h1>
+    <button class="new-button" (click)="navigateToSetup()">New Tournament</button>
+  </header>
+
+  <div class="content" *ngIf="!loading">
+    <div class="tournament-section" *ngIf="inProgressTournaments.length > 0">
+      <h2 class="section-title">In Progress</h2>
+      <div class="tournament-grid">
+        <div
+          class="tournament-card in-progress"
+          *ngFor="let tournament of inProgressTournaments"
+          (click)="openTournament(tournament)">
+          <div class="card-header">
+            <span class="tournament-name">{{ tournament.name }}</span>
+            <button class="delete-btn" (click)="confirmDelete(tournament, $event)">Delete</button>
+          </div>
+          <div class="card-body">
+            <span class="tournament-type">{{ getTypeLabel(tournament.type) }}</span>
+            <span class="tournament-teams">{{ tournament.teamNames.length }} teams</span>
+            <span class="tournament-progress">{{ getMatchProgress(tournament) }}</span>
+          </div>
+          <div class="card-footer">
+            <span class="tournament-date">Updated {{ formatDate(tournament.updatedAt) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tournament-section" *ngIf="setupTournaments.length > 0">
+      <h2 class="section-title">Setup</h2>
+      <div class="tournament-grid">
+        <div
+          class="tournament-card setup"
+          *ngFor="let tournament of setupTournaments"
+          (click)="openTournament(tournament)">
+          <div class="card-header">
+            <span class="tournament-name">{{ tournament.name }}</span>
+            <button class="delete-btn" (click)="confirmDelete(tournament, $event)">Delete</button>
+          </div>
+          <div class="card-body">
+            <span class="tournament-type">{{ getTypeLabel(tournament.type) }}</span>
+            <span class="tournament-teams">{{ tournament.teamNames.length }} teams</span>
+          </div>
+          <div class="card-footer">
+            <span class="tournament-date">Created {{ formatDate(tournament.createdAt) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tournament-section" *ngIf="completedTournaments.length > 0">
+      <h2 class="section-title">Completed</h2>
+      <div class="tournament-grid">
+        <div
+          class="tournament-card completed"
+          *ngFor="let tournament of completedTournaments"
+          (click)="openTournament(tournament)">
+          <div class="card-header">
+            <span class="tournament-name">{{ tournament.name }}</span>
+            <button class="delete-btn" (click)="confirmDelete(tournament, $event)">Delete</button>
+          </div>
+          <div class="card-body">
+            <span class="tournament-type">{{ getTypeLabel(tournament.type) }}</span>
+            <span class="tournament-teams">{{ tournament.teamNames.length }} teams</span>
+          </div>
+          <div class="card-footer">
+            <span class="tournament-date">Completed {{ formatDate(tournament.updatedAt) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="tournaments.length === 0">
+      <p>No tournaments yet.</p>
+      <button class="btn-primary" (click)="navigateToSetup()">Create Your First Tournament</button>
+    </div>
+  </div>
+
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+</div>
+
+<!-- Delete Confirmation Dialog -->
+<div class="dialog-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <h2>Delete Tournament?</h2>
+    <p>Are you sure you want to delete "{{ tournamentToDelete?.name }}"? This action cannot be undone.</p>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" (click)="cancelDelete()">Cancel</button>
+      <button class="btn btn-danger" (click)="deleteConfirmed()">Delete</button>
+    </div>
+  </div>
+</div>

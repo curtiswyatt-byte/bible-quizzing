@@ -1,0 +1,164 @@
+<div class="quiz-sets-container">
+  <div class="quiz-sets-header">
+    <h1>Quiz Question Sets</h1>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="openCreateEditor()" *ngIf="!showEditor">Create New Set</button>
+      <button class="btn btn-secondary" (click)="onReturn()">Return</button>
+    </div>
+  </div>
+
+  <div class="quiz-sets-content">
+    <!-- List View -->
+    <div class="sets-list" *ngIf="!showEditor">
+      <div class="list-header">
+        <h2>All Quiz Sets</h2>
+        <p *ngIf="quizSets.length === 0" class="empty-message">No quiz sets created yet. Click "Create New Set" to get started.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-section" *ngIf="quizSets.length > 0">
+        <div class="filter-group">
+          <label for="bookFilter" class="filter-label">Filter by Book:</label>
+          <select
+            id="bookFilter"
+            class="filter-control"
+            [(ngModel)]="selectedBook"
+            (change)="onFilterChange()"
+            name="selectedBook">
+            <option value="">All Books</option>
+            <option *ngFor="let book of availableBooks" [value]="book">{{ book }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="versionFilter" class="filter-label">Filter by Version:</label>
+          <select
+            id="versionFilter"
+            class="filter-control"
+            [(ngModel)]="selectedVersion"
+            (change)="onFilterChange()"
+            name="selectedVersion">
+            <option value="">All Versions</option>
+            <option *ngFor="let version of availableVersions" [value]="version">{{ version }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sets-grid">
+        <p *ngIf="filteredQuizSets.length === 0 && quizSets.length > 0" class="empty-message">No quiz sets match the selected filters.</p>
+        <div
+          *ngFor="let set of filteredQuizSets"
+          class="set-card"
+          [class.selected]="selectedSet?.setID === set.setID"
+          (click)="selectSet(set)">
+          <div class="set-card-header">
+            <h3>{{ set.setID }}</h3>
+            <button class="btn-icon" (click)="openEditEditor(set); $event.stopPropagation()" title="Edit Set">
+              <span>✎</span>
+            </button>
+          </div>
+          <div class="set-card-body">
+            <div class="set-stat">
+              <span class="stat-label">Questions:</span>
+              <span class="stat-value">{{ set.questionCount }}</span>
+            </div>
+            <div class="set-stat">
+              <span class="stat-label">Bonus:</span>
+              <span class="stat-value">{{ set.bonusCount }}</span>
+            </div>
+          </div>
+          <div class="set-card-questions" *ngIf="selectedSet?.setID === set.setID">
+            <h4>Questions in this set:</h4>
+            <ul class="question-list">
+              <li *ngFor="let q of set.questions" class="question-item">
+                <span class="question-num">Q{{ q.questNum }}</span>
+                <span class="question-desc">{{ q.description }}</span>
+                <span class="bonus-badge" *ngIf="q.bonusNum > 0">BONUS</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor View -->
+    <div class="sets-editor" *ngIf="showEditor">
+      <div class="editor-header">
+        <h2>{{ editorMode === 'create' ? 'Create New Quiz Set' : 'Edit Quiz Set' }}</h2>
+        <button class="btn btn-secondary" (click)="closeEditor()">Cancel</button>
+      </div>
+
+      <div class="editor-form">
+        <div class="form-group">
+          <label for="setID" class="form-label">Set ID</label>
+          <input
+            id="setID"
+            type="text"
+            class="form-control"
+            [(ngModel)]="setID"
+            [disabled]="editorMode === 'edit'"
+            placeholder="e.g., Round1, Semifinals, Practice-A"
+            name="setID">
+          <small class="form-hint">A unique identifier for this quiz set</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Add Questions to Set</label>
+          <div class="add-question-row">
+            <select
+              class="form-control"
+              [(ngModel)]="newQuestionID"
+              name="newQuestionID">
+              <option [ngValue]="null">Select a question...</option>
+              <option *ngFor="let q of availableQuestions" [ngValue]="q.questionID">
+                Q{{ q.questionID }}: {{ q.qdescription.substring(0, 80) }}{{ q.qdescription.length > 80 ? '...' : '' }}
+              </option>
+            </select>
+            <button
+              class="btn btn-primary"
+              (click)="addQuestionToSet()"
+              [disabled]="!newQuestionID">
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div class="selected-questions-section">
+          <h3>Selected Questions ({{ selectedQuestions.length }})</h3>
+          <p *ngIf="selectedQuestions.length === 0" class="empty-message">No questions added yet. Select questions from the dropdown above.</p>
+
+          <ul class="selected-questions-list">
+            <li *ngFor="let q of selectedQuestions" class="selected-question-item">
+              <div class="question-info">
+                <span class="question-num">Q{{ q.questionID }}</span>
+                <span class="question-desc">{{ q.description }}</span>
+              </div>
+              <div class="question-actions">
+                <button
+                  class="btn-toggle-bonus"
+                  [class.is-bonus]="q.isBonus"
+                  (click)="toggleBonus(q.questionID)"
+                  title="{{ q.isBonus ? 'Remove bonus flag' : 'Mark as bonus' }}">
+                  {{ q.isBonus ? 'BONUS' : 'Regular' }}
+                </button>
+                <button
+                  class="btn-remove"
+                  (click)="removeQuestion(q.questionID)"
+                  title="Remove from set">
+                  ×
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn btn-primary btn-large" (click)="saveSet()">
+            {{ editorMode === 'create' ? 'Create Set' : 'Save Changes' }}
+          </button>
+          <button class="btn btn-secondary" (click)="closeEditor()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
