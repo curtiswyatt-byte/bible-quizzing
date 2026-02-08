@@ -32,7 +32,7 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/datasets/*.json"
+          "**/datasets/*.json"
         ]
       }
     }
