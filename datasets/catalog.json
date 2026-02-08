@@ -1,0 +1,89 @@
+[
+  {
+    "id": "biblequizzing-2-10-titus99",
+    "book": "Titus",
+    "version": "Default",
+    "path": "/datasets/biblequizzing-2-10-titus99.json",
+    "description": "Converted from BibleQuizzing 2.10/Titus99.mdb",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "dist-b-files-titus99",
+    "book": "Titus",
+    "version": "Default",
+    "path": "/datasets/dist-b-files-titus99.json",
+    "description": "Converted from Dist B Files/Titus99.mdb",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "distfiles-james98",
+    "book": "James",
+    "version": "Default",
+    "path": "/datasets/distfiles-james98.json",
+    "description": "936 Questions, 720 Quiz Sets (Questions Only)",
+    "contentType": "questions",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "distfiles-james98-070498",
+    "book": "James",
+    "version": "070498",
+    "path": "/datasets/distfiles-james98-070498.json",
+    "description": "484 Questions, 51 Players, 20 Quiz Sets",
+    "contentType": "complete",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "distfiles-james98-0906",
+    "book": "James",
+    "version": "0906",
+    "path": "/datasets/distfiles-james98-0906.json",
+    "description": "708 Questions, 480 Quiz Sets (Questions Only)",
+    "contentType": "questions",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "james98",
+    "book": "James",
+    "version": "Default",
+    "path": "/datasets/james98.json",
+    "description": "632 Questions, 91 Players, 242 Quiz Sets (Recommended)",
+    "contentType": "complete",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "niv-james98-niv1984",
+    "book": "James",
+    "version": "NIV 1984",
+    "path": "/datasets/niv-james98-niv1984.json",
+    "description": "108 Questions, 8 Players, 20 Quiz Sets (NIV)",
+    "contentType": "complete",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  },
+  {
+    "id": "backups-james98",
+    "book": "James",
+    "version": "Default",
+    "path": "/datasets/backups-james98.json",
+    "description": "632 Questions, 91 Players, 242 Quiz Sets",
+    "contentType": "complete",
+    "quizIdPrefix": "Quiz",
+    "quizIdNumber": "1",
+    "backupDrive": "A"
+  }
+]
+

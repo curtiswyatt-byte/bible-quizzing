@@ -1,0 +1,22 @@
+{
+  "Players": [],
+  "Teams": [],
+  "QuestionDetail": [],
+  "QuestionSelect": [],
+  "QuizSet": [],
+  "Verses": [],
+  "Types": [],
+  "Parms": [],
+  "MatchSummary": [],
+  "MatchDetail": [],
+  "MatchStats": [],
+  "userFile": {
+    "book": "Philippians N A S",
+    "quizDBname": "Philippians N A S Dataset",
+    "quizIDPre": "Quiz",
+    "quizIDNum": "1",
+    "backupDrive": "A",
+    "bookVersion": "Default",
+    "datasetId": "setupwiz-philippiansnas1995"
+  }
+}

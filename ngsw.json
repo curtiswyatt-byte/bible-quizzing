@@ -1,0 +1,176 @@
+{
+  "configVersion": 1,
+  "timestamp": 1770557296854,
+  "index": "/bible-quizzing/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/bible-quizzing/chunk-2L5AGX45.js",
+        "/bible-quizzing/chunk-34TFBUDB.js",
+        "/bible-quizzing/chunk-34UYGWDD.js",
+        "/bible-quizzing/chunk-3PYWSWVI.js",
+        "/bible-quizzing/chunk-45QSGMLT.js",
+        "/bible-quizzing/chunk-7U6YCU2K.js",
+        "/bible-quizzing/chunk-7WO65EVB.js",
+        "/bible-quizzing/chunk-C3TY33SO.js",
+        "/bible-quizzing/chunk-CGBRYVCA.js",
+        "/bible-quizzing/chunk-DVRTDDWI.js",
+        "/bible-quizzing/chunk-F7MFZPZP.js",
+        "/bible-quizzing/chunk-GJ3ACHC3.js",
+        "/bible-quizzing/chunk-H5EWHJMM.js",
+        "/bible-quizzing/chunk-KODUIQMG.js",
+        "/bible-quizzing/chunk-KOJL3MDF.js",
+        "/bible-quizzing/chunk-MPVIUO3Q.js",
+        "/bible-quizzing/chunk-MUTDHUO3.js",
+        "/bible-quizzing/chunk-NQLUQZSU.js",
+        "/bible-quizzing/chunk-NVXFBJBJ.js",
+        "/bible-quizzing/chunk-OKBZJNDV.js",
+        "/bible-quizzing/chunk-PJ2BBSRX.js",
+        "/bible-quizzing/chunk-QUMNU2Z6.js",
+        "/bible-quizzing/chunk-RURAUEF7.js",
+        "/bible-quizzing/chunk-T66UWPSL.js",
+        "/bible-quizzing/chunk-UB3YECBX.js",
+        "/bible-quizzing/chunk-XCTUARI4.js",
+        "/bible-quizzing/chunk-YWSIASIC.js",
+        "/bible-quizzing/chunk-ZKBSY5OF.js",
+        "/bible-quizzing/favicon.ico",
+        "/bible-quizzing/index.html",
+        "/bible-quizzing/main-5RH4XYJN.js",
+        "/bible-quizzing/manifest.webmanifest",
+        "/bible-quizzing/polyfills-5CFQRCPP.js",
+        "/bible-quizzing/styles-TNBPPBU3.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/bible-quizzing/icons/icon-128x128.png",
+        "/bible-quizzing/icons/icon-144x144.png",
+        "/bible-quizzing/icons/icon-152x152.png",
+        "/bible-quizzing/icons/icon-192x192.png",
+        "/bible-quizzing/icons/icon-384x384.png",
+        "/bible-quizzing/icons/icon-512x512.png",
+        "/bible-quizzing/icons/icon-72x72.png",
+        "/bible-quizzing/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "datasets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/bible-quizzing/datasets/backups-james98.json",
+        "/bible-quizzing/datasets/biblequizzing-2-10-titus99.json",
+        "/bible-quizzing/datasets/catalog.json",
+        "/bible-quizzing/datasets/dist-b-files-titus99.json",
+        "/bible-quizzing/datasets/distfiles-james98-070498.json",
+        "/bible-quizzing/datasets/distfiles-james98-0906.json",
+        "/bible-quizzing/datasets/distfiles-james98.json",
+        "/bible-quizzing/datasets/james-niv1984.json",
+        "/bible-quizzing/datasets/james98.json",
+        "/bible-quizzing/datasets/niv-james98-niv1984.json",
+        "/bible-quizzing/datasets/niv-jamespracticeniv1984.json",
+        "/bible-quizzing/datasets/setupwiz-james98.json",
+        "/bible-quizzing/datasets/setupwiz-jamespracticenas1995.json",
+        "/bible-quizzing/datasets/setupwiz-philippiansnas1995.json",
+        "/bible-quizzing/datasets/titus-niv1984.json"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/bible-quizzing/chunk-2L5AGX45.js": "a530a019c2b1c5c1f192b6f1339cbaa14195bb8a",
+    "/bible-quizzing/chunk-34TFBUDB.js": "d39e5aa6c24de57697a4f2535edf27e5065c3d25",
+    "/bible-quizzing/chunk-34UYGWDD.js": "8e37ab195b1f4cd1e1c6e39fcfc6e8fcf8d0f225",
+    "/bible-quizzing/chunk-3PYWSWVI.js": "64e1f3bdfd4a5aae5049f8f7071cc2bfff5a01d6",
+    "/bible-quizzing/chunk-45QSGMLT.js": "ba1861149bd39c28e8e256a0774abef4066da50b",
+    "/bible-quizzing/chunk-7U6YCU2K.js": "3dba9c5037a42e1a8850461ba2e6e0a2eab7e152",
+    "/bible-quizzing/chunk-7WO65EVB.js": "2c7cb99bcafa5e815abafb8b0d370ebc3c065649",
+    "/bible-quizzing/chunk-C3TY33SO.js": "1a203d376fc3e9e1d74f48a0720dad875bb081c2",
+    "/bible-quizzing/chunk-CGBRYVCA.js": "54d954188564e2cfa712cd05eb399274e039f9b5",
+    "/bible-quizzing/chunk-DVRTDDWI.js": "0165c3e2bff2d191cab2623abf650964ba7b0c72",
+    "/bible-quizzing/chunk-F7MFZPZP.js": "e341cc1b10d6503748dfb47223fc5c6812464704",
+    "/bible-quizzing/chunk-GJ3ACHC3.js": "43853513ba1d481f7e091ca9f7efdaa3716cad2a",
+    "/bible-quizzing/chunk-H5EWHJMM.js": "9d62c9cd67080ae52ec8336212ad8ae4872438ed",
+    "/bible-quizzing/chunk-KODUIQMG.js": "41739e58d9f741d47cac35235cebaab698102208",
+    "/bible-quizzing/chunk-KOJL3MDF.js": "71031cb77692562afc118b2645502c51f1e1ac6a",
+    "/bible-quizzing/chunk-MPVIUO3Q.js": "42ff3da5b4bdf5d3f43e75975827e70400f215de",
+    "/bible-quizzing/chunk-MUTDHUO3.js": "ce81716ac82ab142faa0edebf91fc1d1b126c092",
+    "/bible-quizzing/chunk-NQLUQZSU.js": "48a061c7f90da5436053b3ffb335850b72973191",
+    "/bible-quizzing/chunk-NVXFBJBJ.js": "6e155b2d18868bb29503ecb238f4518db0ae5359",
+    "/bible-quizzing/chunk-OKBZJNDV.js": "94b1b1d51c9d6eb130ab7f5d46d75beff2012b3f",
+    "/bible-quizzing/chunk-PJ2BBSRX.js": "2a25738d65c430cd7562cc758a6f594aa5447033",
+    "/bible-quizzing/chunk-QUMNU2Z6.js": "dca59ddd01e65934bc3eb83e9e888d744c04f533",
+    "/bible-quizzing/chunk-RURAUEF7.js": "6ced9e1f5f8af15d0d86c9295f060dc11633ef85",
+    "/bible-quizzing/chunk-T66UWPSL.js": "37422256b1442cba067099ebf5201c3918eed35c",
+    "/bible-quizzing/chunk-UB3YECBX.js": "f702101d3f32155d079feee5977368cbeeb17f92",
+    "/bible-quizzing/chunk-XCTUARI4.js": "6d8fa92b6972530e96d40ded0326311f88ffae67",
+    "/bible-quizzing/chunk-YWSIASIC.js": "308a116305df6bb86880e39c28ea6a2ed787fc66",
+    "/bible-quizzing/chunk-ZKBSY5OF.js": "01eeac9035a0bdcdb1305876c1e98681c8b602bd",
+    "/bible-quizzing/datasets/backups-james98.json": "d5b39aad729f2191e154b7f4146da498360a5c15",
+    "/bible-quizzing/datasets/biblequizzing-2-10-titus99.json": "7e6ce9d8ee47b3eeb3acaf220b35fdc8d236b9b8",
+    "/bible-quizzing/datasets/catalog.json": "4b5ea6ef68bd8be33b86e09e128ac280674fe791",
+    "/bible-quizzing/datasets/dist-b-files-titus99.json": "5edba63930a70bed79b8e97640cb387c7f27a9b4",
+    "/bible-quizzing/datasets/distfiles-james98-070498.json": "6dcb277655f2efb4f207ebfd53bc9b5f68f60eaf",
+    "/bible-quizzing/datasets/distfiles-james98-0906.json": "569130dda1124551a278e577b50056b4e8a0ca61",
+    "/bible-quizzing/datasets/distfiles-james98.json": "19cbc798abe2cdd200d0306973a2079e650de45e",
+    "/bible-quizzing/datasets/james-niv1984.json": "d21074188e6c366fdb8413e268d5b17d764b384d",
+    "/bible-quizzing/datasets/james98.json": "7588787f94bc1d135d5a35e51cec188ebec0e144",
+    "/bible-quizzing/datasets/niv-james98-niv1984.json": "c5912a604dce968b4b03344fbd23f3e0bf796feb",
+    "/bible-quizzing/datasets/niv-jamespracticeniv1984.json": "3e8bfda4d5a35ddd02e6dd710a14f4bd73389c84",
+    "/bible-quizzing/datasets/setupwiz-james98.json": "3f2af0fdf0a0d1f5714bb7cb643c2a4018ec5e10",
+    "/bible-quizzing/datasets/setupwiz-jamespracticenas1995.json": "4c47fecce9546c107aa691b6e9c65837a2828a3d",
+    "/bible-quizzing/datasets/setupwiz-philippiansnas1995.json": "0adf6d9b255039fc78a461965cd3d839c7ae676b",
+    "/bible-quizzing/datasets/titus-niv1984.json": "22115117cbfba25b702a2d3b47b2708100e04425",
+    "/bible-quizzing/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/bible-quizzing/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "/bible-quizzing/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
+    "/bible-quizzing/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
+    "/bible-quizzing/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
+    "/bible-quizzing/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "/bible-quizzing/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "/bible-quizzing/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
+    "/bible-quizzing/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
+    "/bible-quizzing/index.html": "fdbf75bbb93a2faba3dbc8f9f6d4bc081727c032",
+    "/bible-quizzing/main-5RH4XYJN.js": "e03c559ed0ff9495b386d62a874e474dfd994bce",
+    "/bible-quizzing/manifest.webmanifest": "c5af43fb4251b0813a4faef2369ebf33d9f0cf17",
+    "/bible-quizzing/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
+    "/bible-quizzing/styles-TNBPPBU3.css": "1d3cd91ba3bc9d92f8762f39bd99e872c687ab6d"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

@@ -1,0 +1,22 @@
+{
+  "Players": [],
+  "Teams": [],
+  "QuestionDetail": [],
+  "QuestionSelect": [],
+  "QuizSet": [],
+  "Verses": [],
+  "Types": [],
+  "Parms": [],
+  "MatchSummary": [],
+  "MatchDetail": [],
+  "MatchStats": [],
+  "userFile": {
+    "book": "James Practice N A S",
+    "quizDBname": "James Practice N A S Dataset",
+    "quizIDPre": "Quiz",
+    "quizIDNum": "1",
+    "backupDrive": "A",
+    "bookVersion": "Default",
+    "datasetId": "setupwiz-jamespracticenas1995"
+  }
+}
