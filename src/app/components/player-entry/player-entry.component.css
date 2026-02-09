@@ -71,7 +71,7 @@
 
 .player-item {
   display: grid;
-  grid-template-columns: 80px 1fr 150px auto;
+  grid-template-columns: 60px 1fr 120px 70px;
   gap: var(--spacing-md);
   align-items: center;
   padding: var(--spacing-md);
@@ -97,12 +97,18 @@
 .player-name {
   font-weight: 600;
   color: var(--xl-gray-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .player-team {
   color: var(--xl-gray-medium);
   font-size: 0.875rem;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .btn-small {
