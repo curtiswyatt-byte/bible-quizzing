@@ -98,12 +98,13 @@ export class TeamSetupComponent implements OnInit {
   async onPlayerSelect() {
     if (!this.selectedPlayer) return;
 
-    // Check if player is already on a team
-    if (this.selectedPlayer.team && this.selectedPlayer.team.trim() !== ' ') {
-      const confirm = window.confirm(
-        `${this.selectedPlayer.nickname || this.selectedPlayer.name} is already on ${this.selectedPlayer.team}. Do you wish to reassign?`
+    // Check if player is already on a team (not empty or just whitespace)
+    const currentTeam = this.selectedPlayer.team?.trim() || '';
+    if (currentTeam !== '') {
+      const confirmReassign = window.confirm(
+        `${this.selectedPlayer.nickname || this.selectedPlayer.name} is already on ${currentTeam}. Do you wish to reassign?`
       );
-      if (!confirm) {
+      if (!confirmReassign) {
         this.selectedPlayer = null;
         return;
       }
