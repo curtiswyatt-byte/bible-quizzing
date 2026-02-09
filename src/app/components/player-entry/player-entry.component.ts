@@ -17,12 +17,16 @@ export class PlayerEntryComponent implements OnInit {
   filteredPlayers: Player[] = [];
   selectedPlayer: Player | null = null;
   isNewPlayer = false;
-  
+
   playerNumber: number | null = null;
-  name: string = '';
+  firstName: string = '';
+  lastName: string = '';
   nickname: string = '';
   ageGroup: string = '';
   team: string = ' ';
+
+  // Age group options for dropdown
+  ageGroupOptions: string[] = ['Middle School', 'High School', 'Adult'];
 
   searchTerm: string = '';
 
@@ -59,7 +63,16 @@ export class PlayerEntryComponent implements OnInit {
     if (player) {
       this.selectedPlayer = player;
       this.isNewPlayer = false;
-      this.name = player.name;
+      // Parse name - stored as "Last, First" format
+      const nameParts = player.name.split(',').map(s => s.trim());
+      if (nameParts.length >= 2) {
+        this.lastName = nameParts[0];
+        this.firstName = nameParts[1];
+      } else {
+        // Fallback if name isn't in expected format
+        this.firstName = player.name;
+        this.lastName = '';
+      }
       this.nickname = player.nickname;
       this.ageGroup = player.ageGroup;
       this.team = player.team;
@@ -77,7 +90,8 @@ export class PlayerEntryComponent implements OnInit {
   }
 
   clearForm() {
-    this.name = '';
+    this.firstName = '';
+    this.lastName = '';
     this.nickname = '';
     this.ageGroup = '';
     this.team = ' ';
@@ -90,14 +104,24 @@ export class PlayerEntryComponent implements OnInit {
       return;
     }
 
-    if (!this.name.trim()) {
-      alert('Player name is required');
+    if (!this.firstName.trim() && !this.lastName.trim()) {
+      alert('Please enter at least first or last name');
       return;
+    }
+
+    // Combine name in "Last, First" format for storage
+    let fullName = '';
+    if (this.lastName.trim() && this.firstName.trim()) {
+      fullName = `${this.lastName.trim()}, ${this.firstName.trim()}`;
+    } else if (this.lastName.trim()) {
+      fullName = this.lastName.trim();
+    } else {
+      fullName = this.firstName.trim();
     }
 
     const player: Player = {
       playerNumber: this.playerNumber,
-      name: this.name.trim(),
+      name: fullName,
       nickname: this.nickname.trim() || ' ',
       ageGroup: this.ageGroup.trim() || ' ',
       team: this.team.trim() || ' '
